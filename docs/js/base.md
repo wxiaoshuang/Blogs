@@ -190,6 +190,41 @@ console.log(uniqueArr); // [{name: 'zs', age: 15}, {name: 'lisi'}]
 
 
 ## 数组交集
+
+<!-- tabs:start -->
+
+### **js**
+
+```js
+function intersection(arr1, arr2 ) {
+    if(!arr1.length) {
+        return arr2
+    }
+    if(!arr2.length) {
+        return arr1
+    }
+    arr1.sort((a, b) => a - b)
+    arr2.sort((a, b) => a - b)
+    let i = 0
+    let j = 0
+    let res = []
+    while(i < arr1.length && j < arr2.length) {
+        if(arr1[i] < arr2[j]) {
+            i++
+        } else if(arr1[i] > arr2[j]) {
+            j++
+        } else {
+            res.push(arr1[i])
+            i++
+            j++
+        }
+    }
+    return res
+}
+```
+
+### **typescript**
+
 ```typescript
 function intersection<T>(arr1: Array<T>, arr2: Array<T>): Array<T> {
     if(!arr1.length) {
@@ -217,6 +252,9 @@ function intersection<T>(arr1: Array<T>, arr2: Array<T>): Array<T> {
     return res
 }
 ```
+
+<!-- tabs:end -->
+
 ## 数组降维
 
 - **方法一：将数组字符串化**
@@ -277,3 +315,42 @@ let start = new Date().getTime();
 console.log('reduceDimension: ', reduceDimension(arr));
 console.log('耗时: ', new Date().getTime() - start);
 ```
+
+# Vue demo
+
+<div id="main">hello {{ msg }}</div>
+
+<script>
+  new Vue({
+    el: '#main',
+    data: { msg: 'Vue' }
+  })
+</script>
+
+# Vuep
+<vuep template="#example"></vuep>
+
+<script v-pre type="text/x-template" id="example">
+  <template>
+    <div>Hello, {{ name }}!</div>
+  </template>
+
+  <script>
+    module.exports = {
+      data: function () {
+        return { name: 'Vue' }
+      }
+    }
+  </script>
+</script>
+
+<details>
+  <summary>images <small>(memorable)</small></summary>
+
+   <div>hihi</div>
+</details>
+
+# Tips
+?> _TODO_ unit test
+
+!> **Important** is money, my friend!
