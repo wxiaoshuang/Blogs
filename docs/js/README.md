@@ -1,6 +1,5 @@
 ## JavaScript
-
-- **基础** [[more]](/js/README.md)
+- **基础** [[more]](/js/数据类型与类型转换.md)
 ## [数据类型与类型转换](/js/数据类型与类型转换.md)(ing)
 ## [DOM](/js/DOM.md)(ing)
 ## [事件](/js/事件.md)(ing)

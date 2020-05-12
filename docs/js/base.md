@@ -1,16 +1,5 @@
 # JavaScript
 
-## 快速导航
-
-- [```[基础]``` 常见问题](#常见问题)
-- [```[基础]``` undefined与undeclared的区别？](#undefined与undeclared的区别)
-- [```[基础]``` typeof、instanceof 类型检测](#类型检测)
-- [```[作用域]``` eval()、with 欺骗词法作用域](#欺骗词法作用域)
-
-- [```[Error]``` 错误类型ReferenceError、TypeError的区别？](#错误)
-- [```[数组去重]``` 数组去重的三种实现方式](#数组去重的三种实现方式)
-- [```[数组降维]``` 数组降维--扁平化多维数组](#数组降维)
-
 ## 常见问题
 
 * ```JavaScript```七种内置类型: ```number、string、boolean、undefined、null、object、symbol```(ES6新增加)
@@ -19,12 +8,6 @@
 * ```(typeof null === 'object') = true```，正确的返回值应该是```null```，但是这个```bug```由来已久。 ```(undefined == null) = true```
 * ```indexOf```为```ECMAScript5```新方法，```IE8```及以下不支持
 *  ```setTimeout(callback, 100)```，```setTimeout```只接受一个函数做为参数不接受闭包，因为闭包会自执行，Nodejs 下最小延迟 ```1ms``` 参见 [v12.x timers.js#L167](https://github.com/nodejs/node/blob/v12.x/lib/internal/timers.js#L167)
-
-## undefined与undeclared的区别
-
-**```undefined：```** 已在作用域中声明但还没有赋值的变量是undefined。
-
-**```undeclared：```** 还没有在作用域中声明过的变量是undeclared，对于undeclared这种情况typeof处理的时候返回的是undefined。
 
 ## 欺骗词法作用域
 
@@ -81,102 +64,159 @@ console.log(a); // 2
 
 javascript引擎在编译阶段会进行性能优化，很多优化依赖于能够根据代码词法进行静态分析，预先确定了变量和函数的定义位置，才能快速找到标识符，但是在词法分析阶段遇到了with或eval无法明确知道它们会接收什么代码，也就无法判断标识符的位置，最简单的做法就是遇到with或eval不做任何优化，使用其中一个都会导致代码运行变慢，因此，请不要使用他们。
 
-## 类型检测
+## 数据类型
 
-* ```typeof```：基本类型用```typeof```来检测
+javascript中的数据类型可以分成两类：基本数据类型和引用数据类型
 
-* ```instanceof```：用来检测是否为数组、对象、正则
+基本数据类型包括Number, String, Boolean, Undefined, Null, Symbol(ES6新增)
 
-```js
-let box = [1,2,3];
-console.log(box instanceof Array); //true
+引用数据类型只有一种，是Object
 
-let box1={};
-console.log(box1 instanceof Object); //true
+基本数据类型用typeof 来判断
 
-let box2=/g/;
-console.log(box2 instanceof RegExp); //true
+```javascript
+typeof 1 // 'number'
+typeof 'adbn' // 'string'
+typeof true // 'boolean'
+typeof null // 'object'
+typeof undefined // 'undefined'
+typeof Symbol() // 'symbol'
+typeof {} // 'object'
+typeof [] // 'object'
+typeof function() {} // 'function'
 ```
 
-## 错误
+注意，**typeof null 的结果是 'object'**
 
-- **ReferenceError错误**
+引用类型判断使用Object.prototype.toString()方法
 
-> 如果在所有嵌套的作用域中遍寻不到所需的变量，引擎会抛出ReferenceError错误，意味这，这是一个未声明的变量，这个错误是一个非常重要的异常类型。
-
-```js
-console.log('a: ', a); // Uncaught ReferenceError: a is not defined
-let a = 2;
+```javascript
+Object.prototype.toString.call([])
+// "[object Array]"
+Object.prototype.toString.call({})
+// "[object Object]"
+Object.prototype.toString.call(function(){})
+// "[object Function]"
+Object.prototype.toString.call(null)
+// "[object Null]"
+Object.prototype.toString.call(undefined)
+// "[object Undefined]"
+Object.prototype.toString.call(1)
+// "[object Number]"
+Object.prototype.toString.call("1")
+// "[object String]"
+Object.prototype.toString.call(true)
+// "[object Boolean]"
+Object.prototype.toString.call(Symbol())
+// "[object Symbol]"
 ```
+### Number
 
-- **TypeError错误**
-
-> 这种错误表示作用域判别成功，但是进行了非法的操作，例如，对一个非函数类型的值进行函数调用，或者引用null、undefined类型的值中的属性，将会抛出TypeError异常错误。
-
-```js
-let a = null; // 或者a = undefined
-console.log(a.b); // Uncaught TypeError: Cannot read property 'b' of null
+## 类型转换
+### 转Number
+有三个函数可以转成数值类型
+Number, parseInt, parseFloat
+```javascript
+Number("1234acv") // NaN
+parseInt("1234acv") // 1234
+parseFloat("1234acv") //1234
 ```
+### 转Boolean
+调用Boolean显示转换
 
-对一个非函数类型的值进行函数调用
+# 数组常用方法总结
+## 数组去重
 
-```js
-let a = 2;
-a(); // TypeError: a is not a function
-```
-
-## 数组去重的三种实现方式
-
-- **Set数组去重**
+- **1 Set数组去重**
 
 > ES6新的数据结构Set，类似于数组，它的元素都是唯一的。
 
 ```js
-{
 let arr = [1, 22, 33, 44, 22, 44];
 
 console.log([...new Set(arr)]); //[1, 22, 33, 44]
-}
 
 ```
 
-- **reduce数组对象去重**
+- **2 reduce数组对象去重**
 
 > reduce对数组中的每一个元素依次执行回调函数，不含数组中未赋值、被删除的元素，回调函数接收四个参数
 
 * ```callback```：执行数组中每个值的函数，包含四个参数
-    * ```previousValue```：上一次调用回调返回的值，或者是提供的初始值```（initialValue）```
-    * ```currentValue```：数组中当前被处理的元素
-    * ```index```：当前元素在数组中的索引
-    * ```array```：调用 ```reduce``` 的数组
+  * ```previousValue```：上一次调用回调返回的值，或者是提供的初始值```（initialValue）```
+  * ```currentValue```：数组中当前被处理的元素
+  * ```index```：当前元素在数组中的索引
+  * ```array```：调用 ```reduce``` 的数组
 * ```initialValue```：可选，作为第一次调用 ```callback``` 的第一个参数。
 
 示例：
 
 ```js
-let hash = {};
-
-function unique(arr, initialValue){
-    return arr.reduce(function(previousValue, currentValue, index, array){
-        hash[currentValue.name] ? '' : hash[currentValue.name] = true && previousValue.push(currentValue);
-
-        return previousValue
-    }, initialValue);
+// 简单数组去重
+function uniq(arr) {
+   let hash = {};
+   
+   function unique(arr){
+       return arr.reduce(function(previousValue, currentValue, index, array){
+           hash[currentValue] ? null : hash[currentValue] = true && previousValue.push(currentValue);
+   
+           return previousValue
+       }, []);
+   } 
+   unique(arr)
+   return arr
 }
+let arr = [10, 30, 40, 40]
+uniq(arr)
+console.log(arr);
+// 数组对象去重
+function uniqBy(arr, key) {
+    let hash = {};
+       
+       function unique(arr, key){
+           return arr.reduce(function(previousValue, currentValue, index, array){
+               hash[currentValue[key]] ? null : hash[currentValue[key]] = true && previousValue.push(currentValue);
+       
+               return previousValue
+           }, []);
+       } 
+       unique(arr, key)
+       return arr
+}
+const uniqueArr = uniqBy([{name: 'zs', age: 15}, {name: 'lisi'}, {name: 'zs'}], 'name');
 
-const uniqueArr = unique([{name: 'zs', age: 15}, {name: 'lisi'}, {name: 'zs'}], []);
-
-console.log(uniqueArr); // uniqueArr.length == 2
+console.log(uniqueArr); // [{name: 'zs', age: 15}, {name: 'lisi'}]
 ```
 
-- **[参考lodash](https://lodash.com/docs/4.17.5#uniqBy)**
 
-```js
-_.uniqBy([{ 'x': 1 }, { 'x': 2 }, { 'x': 1 }], 'x');
-
-// => [{ 'x': 1 }, { 'x': 2 }]
+## 数组交集
+```typescript
+function intersection<T>(arr1: Array<T>, arr2: Array<T>): Array<T> {
+    if(!arr1.length) {
+        return arr2
+    }
+    if(!arr2.length) {
+        return arr1
+    }
+    arr1.sort((a, b) => a - b)
+    arr2.sort((a, b) => a - b)
+    let i: number = 0
+    let j: number = 0
+    let res:Array<T>
+    while(i < arr1.length && j < arr2.length) {
+        if(arr1[i] < arr2[j]) {
+            i++
+        } else if(arr1[i] > arr2[j]) {
+            j++
+        } else {
+            res.push(arr1[i])
+            i++
+            j++
+        }
+    }
+    return res
+}
 ```
-
 ## 数组降维
 
 - **方法一：将数组字符串化**

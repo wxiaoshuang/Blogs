@@ -1,7 +1,7 @@
-<!-- * [首页](/) -->
+* [首页](/)
 * 前端基础
     * [CSS](/dataStructure-and-algorithm/README.md) 
-    * [Javascript](/js/README.md)  
+    * [Javascript](/js/base.md)
     * [ES6](/dataStructure-and-algorithm/README.md)
     * [typescript](/dataStructure-and-algorithm/README.md)
 * 前端进阶
