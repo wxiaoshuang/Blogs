@@ -43,7 +43,9 @@ create(null); // OK
 // create(false); // Error
 // create(undefined); // Error
 ```
-- **枚举**
+
+**枚举**
+
 ```typescript
 enum Color {
     RED=1,
@@ -53,7 +55,7 @@ enum Color {
 let colorName = Color[2]
 console.log(colorName)
 ```
-编辑结果
+编译结果
 ```js
 var Color;
 (function (Color) {
@@ -71,14 +73,14 @@ interface SquareConfig {
     width: number; 
 }
 ```
-- **可选属性**
+### 可选属性
 ```typescript
 interface SquareConfig {
     width: number;
     color?: string;
 }
 ```
-- **只读属性**
+### 只读属性
 ```typescript
 interface Point {
     readonly x: number;
@@ -107,10 +109,11 @@ let ro: ReadonlyArray<number> = a;
 ```typescript
 a = ro as number[];
 ```
+
 ?>**`const` vs `readonly`**  
 最简单判断该用readonly还是const的方法是看要把它做为变量使用还是做为一个属性。 做为变量使用的话用 const，若做为属性则使用readonly。
 
-- **额外属性**
+### 额外属性
 
  如果 SquareConfig带有上面定义的类型的color和width属性，并且还会带有任意数量的其它属性，那么我们可以这样定义它：
 ```typescript
@@ -122,7 +125,7 @@ interface SquareConfig {
 ```
 表示的是SquareConfig可以有任意数量的属性，并且只要它们不是color和width，那么就无所谓它们的类型是什么。
 
-- **函数类型**
+### 函数类型
 
 接口除了描述对象，还可以描述函数
 >为了使用接口表示函数类型，我们需要给接口定义一个调用签名。 它就像是一个只有参数列表和返回值类型的函数定义。参数列表里的每个参数都需要名字和类型。
@@ -138,7 +141,7 @@ mySearch = function(src: string, sub: string): boolean {
   return result > -1;
 }
 ```
-- **可索引类型**
+### 可索引类型
 
 > 与使用接口描述函数类型差不多，我们也可以描述那些能够“通过索引得到”的类型
 ```typescript
@@ -190,7 +193,7 @@ let myArray: ReadonlyStringArray = ["Alice", "Bob"];
 myArray[2] = "Mallory"; // error!
 ```
 
-- **类类型**
+### 类类型
 > 与C#或Java里接口的基本作用一样，TypeScript也能够用它来明确的强制一个类去符合某种契约
 ```typescript
 interface ClockInterface {
@@ -263,13 +266,54 @@ let digital = createClock(DigitalClock, 12, 17);
 let analog = createClock(AnalogClock, 7, 32);
 ```
 因为当一个类实现了一个接口时，只对其实例部分进行类型检查。 constructor存在于类的静态部分，所以不在检查的范围内。
-- **继承接口**
+### 继承接口
+> 接口也可以相互继承。 这让我们能够从一个接口里复制成员到另一个接口里，可以更灵活地将接口分割到可重用的模块里。
+> 一个接口可以继承多个接口，创建出多个接口的合成接口。
+```typescript
+interface Shape {
+    color: string;
+}
 
-- **混合类型**
+interface PenStroke {
+    penWidth: number;
+}
 
-- **接口继承类**
+interface Square extends Shape, PenStroke {
+    sideLength: number;
+}
+
+let square = <Square>{};
+square.color = "blue";
+square.sideLength = 10;
+square.penWidth = 5.0;
+```
+### 混合类型
+> 先前我们提过，接口能够描述JavaScript里丰富的类型。 因为JavaScript其动态灵活的特点，有时你会希望一个对象可以同时具有上面提到的多种类型。
+
+一个例子就是，一个对象可以同时做为函数和对象使用，并带有额外的属性。
+```typescript
+interface Counter {
+    (start: number): string;
+    interval: number;
+    reset(): void;
+}
+
+function getCounter(): Counter {
+    let counter = <Counter>function (start: number) { };
+    counter.interval = 123;
+    counter.reset = function () { };
+    return counter;
+}
+
+let c = getCounter();
+c(10);
+c.reset();
+c.interval = 5.0;
+```
+### 接口继承类
 > 当接口继承了一个类类型时，它会继承类的成员但不包括其实现。 就好像接口声明了所有类中存在的成员，但并没有提供具体实现一样。 接口同样会继承到类的private和protected成员。 这意味着当你创建了一个接口继承了一个拥有私有或受保护的成员的类时，这个接口类型只能被这个类或其子类所实现（implement）
 
 !> **Important** 有点绕!
 ## 类
+
 ## 函数
