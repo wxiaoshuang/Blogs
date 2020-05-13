@@ -59,14 +59,14 @@
             errorText: 'Error',
             successText: 'Copied'
         },
-        count:{
+        count: {
             countable: true,
             position: 'top',
             margin: '10px',
             float: 'right',
-            fontsize:'0.9em',
-            color:'rgb(90,90,90)',
-            language:'chinese',
+            fontsize: '0.9em',
+            color: 'rgb(90,90,90)',
+            language: 'chinese',
             localization: {
                 words: "",
                 minute: ""
@@ -76,6 +76,8 @@
         plugins: [
             function (hook, vm) {
                 hook.doneEach(function () {
+                    // parse twemoji
+                    twemoji.parse(document);
                     var label, domObj, main, divEle, gitalk;
                     label = vm.route.path.split("/").pop();
                     domObj = Docsify.dom;
@@ -123,6 +125,12 @@
 <script src="//unpkg.com/docsify-count/dist/countable.min.js"></script>
 <!--tab功能-->
 <script src="https://cdn.jsdelivr.net/npm/docsify-tabs@1"></script>
+<!--流程图-->
+<script src="//unpkg.com/mermaid/dist/mermaid.js"></script>
+<script src="//unpkg.com/docsify-mermaid@latest/dist/docsify-mermaid.js"></script>
+<script>mermaid.initialize({startOnLoad: true});</script>
+<!--推特表情-->
+<script src="//cdn.jsdelivr.net/gh/TaQini/docsify-twemoji@master/twemoji.min.js"></script>
 <!--<script src="https://cdn.jsdelivr.net/npm/docsify-example-panels@1"></script>-->
 </body>
 </html>

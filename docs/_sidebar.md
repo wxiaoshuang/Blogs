@@ -2,12 +2,7 @@
     * [简介](README.md)
     * [博客语法](syntax.md)
 * JavaScript
-     * [基础](/js/base.md)
-     * [DOM](/js/DOM.md)
-     * [事件](/js/事件.md)
-     * [创建对象的7种方式](/js/js创建对象的7种方式.md)
-     * [继承的6种方式](/js/js实现继承的6种方式.md)
-     * [函数式编程](/js/函数式编程.md)
+     * [基础部分](/js/base.md)
 * ES6
 
 * [vue]()
@@ -18,6 +13,8 @@
 * 数据结构与算法
     * [算法](/dataStructure-and-algorithm/README.md)
     * [leetcode](/dataStructure-and-algorithm/leetcode.md)
+* python
+ * [入门教程](/python/入门教程.md)
 * 计算机网络
     * [计算机网络性能](/computer-network/计算机网络性能.md)
     * [计算机网络体系结构](/computer-network/计算机网络体系结构.md)
