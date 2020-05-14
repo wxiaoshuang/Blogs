@@ -136,7 +136,7 @@ SHA（Secure Hash Algorithms）算法是美国国家标准与技术研究院（N
 
 #### 对称加密算法
 
-![image-20200321222510361](./images/image-对称加密png)
+![image-20200321222510361](../images/image-对称加密png)
 
 对称加密算法可以用下列公式简单表述：
 
@@ -168,7 +168,7 @@ E和D分别表示加密和解密，通过公式可以了解几个关键点：
 
 相比对称加密算法来说，公开密钥算法尤其是RSA算法运算非常缓慢，一般情况下，需要加密的明文数据都非常大，如果使用公开密钥算法进行加密，运算性能会惨不忍睹。公**开密钥算法在密码学中一般进行密钥协商或者数字签名**，因为这两者运算的数据相对较小。
 
-![image-20200321223832667](./images/image-非对称加密.png)
+![image-20200321223832667](../images/image-非对称加密.png)
 
 非对称加密算法有DH、DSA、RSA、ECC等。
 
@@ -196,7 +196,7 @@ ECC（Elliptic Curve Cryptography）是非对称加密里的“后起之秀”�
 
 签名生成流程如图
 
-![image-20200321225001630](./images/image-数字签名.png)
+![image-20200321225001630](../images/image-数字签名.png)
 
 + 发送者对消息计算摘要值。
 
@@ -205,7 +205,7 @@ ECC（Elliptic Curve Cryptography）是非对称加密里的“后起之秀”�
 
 
 
-![image-20200321225127554](./images/image-签名验证png)
+![image-20200321225127554](../images/image-签名验证png)
 
 + 接收者接收到消息后，拆分出消息和消息签名值A。
 + 接收者使用公钥对消息进行运算得到摘要值B。
@@ -217,7 +217,7 @@ ECC（Elliptic Curve Cryptography）是非对称加密里的“后起之秀”�
 
 HTTPS其实是一个“非常简单”的协议，RFC文档很小，里面规定了**新的协议名“https”，默认端口号443**，至于其他的什么请求-应答模式、报文结构、请求方法、URI、头字段、连接管理等等都完全沿用HTTP，没有任何新的东西
 
-![image-20200321220010193](./images/image-SSL-TLS.png)
+![image-20200321220010193](../images/image-SSL-TLS.png)
 
 ## SSL/TLS
 
