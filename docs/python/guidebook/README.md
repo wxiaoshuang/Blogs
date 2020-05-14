@@ -696,3 +696,110 @@ def person(name, age, *args, city, job):
 ### 参数组合
 
 在Python中定义函数，可以用必选参数、默认参数、可变参数、关键字参数和命名关键字参数，这5种参数都可以组合使用。但是请注意，参数定义的顺序必须是：**必选参数、默认参数、可变参数、命名关键字参数和关键字参数**
+
+## 函数式编程
+
+### 高阶函数
+
+### 匿名函数
+
+### 返回函数
+
+### 偏函数
+
+### 装饰器
+
+
+## 面向对象
+
+python中定义类
+
+python中的类的所有方法的第一个参数永远是self,指向实例，后面的参数才是方法真正的参数
+```python
+class Person:
+    staticKey = 'hello' # 类属性
+    # 构造函数，self指代实例
+    def __init__(self, name, age):
+        self.__name = name #私有实例属性
+        self.age = age # 实例属性
+    # 实例方法
+    def speak(self, name):
+        print("my name is " + self.name)
+    # 私有实例方法，只可以在类内部调用
+    def __say(self, name):
+                print("my name is " + self.name)
+```
+
+```python
+ p1 = Person('name', 10) # 创建实例
+ p1 = Person('p2', 20) # 创建实例
+ print(p1.name) # 访问私有属性，报错
+ print(p1.age) # 10
+ print(p1.staticKey) # p1没有staticKey属性，继续查找到类的同名属性staticKey，值是 'hello'
+ print(p2.staticKey) # 原因同上
+ print(Person.staticKey) # 访问类属性 结果是'hello'
+ p2.staticKey = 'p2 key' # 给p2赋值一个类属性同名的属性staticKey
+ print(p2.staticKey) # 'p2 key'
+ print(Person.staticKey) # 'hello'
+ del p2.staticKey # 删除同名实例属性
+ print(p2.staticKey) # 'hell0' 由于实例的staticKey属性没有找到，类的staticKey属性就显示出来了
+```
+?> _Tips:_  在编写程序的时候，千万不要对实例属性和类属性使用相同的名字，因为相同名称的实例属性将屏蔽掉类属性，但是当你删除实例属性后，再使用相同的名称，访问到的将是类属性
+
+?> _Q:_ 在方法内如何访问类属性? `self.__class__.类属性名称`或者`类名.类属性名称`
+
+继承和多态
+
+```python
+class Animal:
+    def run(self):
+        print('Animal is running')
+# Dog 继承 Animal
+class Dog(Animal):
+    def run(self):
+        print('Dog is running')
+# Cat 继承 Animal
+class Cat(Animal):
+    def run(self):
+        print('Dog is running')
+        
+```
+思考下面的结果
+
+```python
+# 创建类的实例`ClassName()`
+animal = Animal()
+cat = Cat()
+dog = Dog()
+animal.run()
+cat.run()
+dog.run()
+isinstance(animal, Animal)
+isinstance(dog, Animal)
+isinstance(cat, Animal)
+isinstance(dog, Dog)
+isinstance(cat, Cat)
+```
+
+## 面向对象高级编程
+
+### \_\_slots\_\_
+限制实例属性
+要限制实例的属性怎么办？比如，只允许对Person实例添加name和age属性
+为了达到限制的目的，Python允许在定义class的时候，定义一个特殊的__slots__变量，来限制该class实例能添加的属性：
+
+```python
+class Person():
+    __slots__ = ('name', 'age') # 用tuple定义允许绑定的属性名称
+p1 = Person()
+p1.name = 'p1'
+p1.age = 20
+p1.score = 30 # 由于于'score'没有被放到__slots__中，所以不能绑定score属性，试图绑定score将得到AttributeError的错误
+```
+`__slots__`要注意，`__slots__`定义的属性仅对当前类实例起作用，对继承的子类是不起作用的：
+
+ python支持多继承
+ ```python
+ class Bird(Animal, Flyable):
+    pass
+ ```
