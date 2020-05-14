@@ -78,8 +78,22 @@
                 hook.doneEach(function () {
                     // parse twemoji
                     twemoji.parse(document);
-                    var label, domObj, main, divEle, gitalk;
-                    label = vm.route.path.split("/").unshift();
+                    var label='', domObj, main, divEle, gitalk;
+                    var labels = vm.route.path.split('/');
+                    // if(labels && labels.startsWith('')
+                    if(labels.length) {
+                        labels.forEach(v => {
+                            if(v) {
+                                label += ' '+v
+                            }
+                        })
+                        if(label) {
+                            label = label.slice(1)
+                        }
+                    }
+
+                    console.log('vm', vm)
+                    console.log('label', label)
                     domObj = Docsify.dom;
                     main = domObj.getNode("#main");
 
