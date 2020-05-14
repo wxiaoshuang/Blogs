@@ -83,13 +83,12 @@
                     var labels = vm.route.path.split('/');
                     // if(labels && labels.startsWith('')
                     if(labels.length) {
-                        labels.forEach(v => {
-                            if(v) {
-                                label += ' '+v
+                        for (let i = 0; i < labels.length; i++) {
+                            var v = labels[i]
+                            if(v && v !=='README') {
+                                label = v
+                                break;
                             }
-                        })
-                        if(label) {
-                            label = label.slice(1)
                         }
                     }
 
