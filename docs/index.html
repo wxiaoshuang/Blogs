@@ -79,7 +79,7 @@
                     // parse twemoji
                     twemoji.parse(document);
                     var label, domObj, main, divEle, gitalk;
-                    label = vm.route.path.split("/").pop();
+                    label = vm.route.path.split("/").unshift();
                     domObj = Docsify.dom;
                     main = domObj.getNode("#main");
 
