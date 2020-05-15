@@ -5,9 +5,9 @@
 * [`数据类型`](/python/数据类型.md)
 * [`函数`](/python/函数.md)
 
-## 数据类型
+# 数据类型
 `int`, `float`, `str`, `bool`, `list`, `tuple`,`set`, `dict`
-### 数值
+## 数值
 数值分整形(`int`),浮点型(`float`)，表示方式有四种，二进制，八进制，十进制，十六进制
 ```python
 bi = 0b12 # 二进制
@@ -39,7 +39,7 @@ print(isinstance(123.09, float))
 
 
 ?> _复数：_  除了int和float类型，python还可以表示复数，用j或者J后缀表示虚数部分，如`5+6j`
-### 字符串
+## 字符串
 字符串可以用单引号，双引号，三引号来表示
 单引号和双引号的作用一样，但是如果单引号里面要包裹单引号，里面的单引号需要用反斜线转义`\'`，双引号同理
 ```python
@@ -88,7 +88,7 @@ str1[1:-5] # 'ello '
 str1[-5:] # 'world'
 str1[::2] # 'hlowrd'
 ```
-### 布尔
+## 布尔
 布尔类型只有两个值`True`和`False`,`bool`可以将其他类型转换为布尔值
 
 bool转换规则请牢记：对于其他类型，只有非空就是真，空就是假
@@ -103,7 +103,7 @@ bool({}) # False
 bool({1}) # True
 
 ```
-### 列表
+## 列表
 列表可以包含不同的元素类型，但是通常元素是相同类型的
 
 ```python
@@ -135,7 +135,7 @@ for v in l:
     print(v)
 ```
 列表长度`len(l)`
-### 元祖
+## 元祖
 Python的元组与列表类似，不同之处在于元组的元素不能修改。
 
 元组使用小括号，列表使用方括号。
@@ -169,7 +169,7 @@ print tup3
 | for x in (1, 2, 3):  print x | 1 2 3             |   迭代           |
 | min(1, 2, 3)                 | 1                 |   最小值          |
 | max(1, 2, 3)                 | 3                 |   最大值         |
-### 集合
+## 集合
 ```python
 set1 = {1}
 ```
@@ -185,7 +185,7 @@ U+2753
 | {1, 2, 3, 4} & {3, 4, 5, 6}   | { 3, 4}|   交集           |
 | {1, 2, 3, 4} - {4, 5, 6}      | {1,2,3}            |   差集    |
 | {1, 2, 3，4} \| {4, 5, 6}      | {1,2,3, 4, 5, 6}  |   并集    |
-### 字典
+## 字典
 > 字典是另一种可变容器模型，且可存储任意类型对象。
 
 字典的每个键值 key=>value 对用冒号 : 分割，每个键值对之间用逗号 , 分割，整个字典包括在花括号 {} 中 ,格式如下所示
@@ -261,9 +261,9 @@ TypeError: list objects are unhashable
 
 !> _思考题：_ 'a' + 1`?   `True + 1`?    `True + 'a'`?
 
-## 运算符
+# 运算符
 
-**算术运算符**
+## 算术运算符
 
 `+` `-` `*` `**` `\` `\\` `%`
 ```python
@@ -386,8 +386,8 @@ s1 is s2 # True
 |`is` `is not`	 | 身份运算符|
 |`in` `not in`	 | 成员运算符|
 |`not` `and` `or`	 | 逻辑运算符|
-## 语句
-### 条件语句
+# 语句
+## 条件语句
 `if-else`
 ```python
 if 3 > 2:
@@ -406,9 +406,9 @@ else:
    print("x >=10")
 ```
 
-?> _Tips_ python没有`switch-case`语句
+?> _Tips_ python没有`switch-case`语句，除了可以用`if-elif-else`语句替代，还可以用dict模拟这个功能
 
-### 循环语句
+## 循环语句
 ```python
 i = 1
 while i < 10:   
@@ -424,7 +424,7 @@ while 1:             # 循环条件为1必定成立
     if i > 10:     # 当i大于10时跳出循环
         break
 ```
-## 包 模块
+# 包 模块
 > Python 模块(Module)，是一个Python文件，以 .py 结尾，包含了 Python 对象定义和Python语句
 
 **`import 语句`**
@@ -480,7 +480,7 @@ from math import *
 2. 如果不在当前目录，Python 则搜索在 shell 变量 PYTHONPATH 下的每个目录。
 3. 如果都找不到，Python会察看默认路径。UNIX下，默认路径一般为/usr/local/lib/python/。
 模块搜索路径存储在 system 模块的 sys.path 变量中。变量里包含当前目录，PYTHONPATH和由安装过程决定的默认目录
-### 包
+## 包
 
 > 包是一个分层次的文件目录结构，它定义了一个由模块及子包，和子包下的子包等组成的 Python 的应用环境。
 
@@ -521,8 +521,157 @@ fn2()
 ```
 ?> **思考** `__init__.py`文件作用?
 
-## 函数
-### 定义函数
+# 列表生成式
+
+> Python内置的非常简单却强大的可以用来创建list的生成式
+
+举个例子，要生成`[1,2,3,4,5]`可以这么
+
+```python
+[ x for x in range(1, 6)]
+```
+
+生成`[1*1， 2*2， 3*3， 4*4， 5*5]`
+
+```python
+[x*x for x in range(1, 6)]
+```
+
+for循环后面还可以加上if判断，这样我们就可以筛选出仅偶数的平方
+
+```python
+>>> [x * x for x in range(1, 11) if x % 2 == 0]
+[4, 16]
+```
+
+还可以使用两层循环，生成全排列
+
+```python
+>>>[ m + n for m in 'ABC' for n in [1, 2]]
+['A1', 'A2','B1', 'B2', 'B3']
+```
+
+列表生成式和if-else的用法
+
+```python
+>>> [ x if x==4 else -x for x in range(1, 11) if x % 2 == 0]
+[-2, 4, -6, -8, -10]
+```
+
+for前面的if语句必须有else，因为是一个表达式，必须根据x计算出一个结果，for后面的if语句不可以带else,他是一个筛选条件
+
+# 生成器
+
+生成器典型的应用场景是这样的： 假如我们需要生成100万个元素，但是我们需要用到的往往只有几个怎么办？如果用列表生成式全部创建的话，则会浪费大量的空间： 为了需要用到的几个元素，我们创建了100万个元素的列表。
+
+**而生成器正是这样可以不必创建完成列表，可以一边循环一边计算出后续元素的机制**
+
+创建生成器的方法很简单，只需要把创建列表生成式时的'[]'改成'()'即可创建一个生成器(generator)
+
+```python
+l = [x for x in [1, 2,3 ]] # list
+g = (x for x in [1,2,3]) # generator
+```
+
+生成器的用法：通过next()函数获得下一个生成的值。直到计算到最后一个元素，没有更多的元素时，抛出`StopIteration`的错误。
+
+```python
+>>>next(g)
+1
+>>>next(g)
+2
+>>>next(g)
+3
+>>>next(g)
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+StopIteration
+```
+
+更简单的用法是使用`for`循环，因为generator也是**`可迭代对象`**，并且不需要关心`StopIteration`的错误
+
+```python
+ for i in g:
+    print(i)
+1
+2
+3
+```
+
+如何需要的生成器比较复杂，无法通过类似列表生成器的方式实现的话，我们可以用函数来实现
+
+写一个生成斐波那契数列的函数
+
+```python
+def fib(max):
+    n, a, b = 0, 0, 1
+    while n < max:
+        yield b
+        a, b = b, a + b #
+        n = n + 1
+    return 'done'
+```
+
+一个函数定义中有yield关键字，那么这个就不是一个简单的函数了，而是一个生成器
+
+generator函数和函数的执行流程不一样。函数是顺序执行，遇到`return`语句或者最后一行函数语句就返回。而generator函数，在每次调用`next()`的时候执行，遇到`yield`语句返回，再次执行时从上次返回的`yield`语句处继续执行
+
+```python
+for x in fib(6):
+	print(x)
+1
+1
+2
+3
+5
+8
+```
+
+# Iterator vs Iterable
+
+凡是可作用于`for`循环的对象都是`Iterable`类型；
+
+    可以直接作用于`for`循环的数据类型有以下几种：
+    
+    一类是集合数据类型，如`list`、`tuple`、`dict`、`set`、`str`等；
+    
+    一类是`generator`，包括生成器和带`yield`的generator function。
+
+凡是可作用于`next()`函数的对象都是`Iterator`类型，它们表示一个惰性计算的序列；
+
+集合数据类型如`list`、`dict`、`str`等是`Iterable`但不是`Iterator`，不过可以通过`iter()`函数获得一个`Iterator`对象。
+
+```python
+from collections.abc import Iterator,Iterable
+isinstance({}, Iterable) # True
+isinstance([], Iterable)# True
+isinstance('abs', Iterable)# True
+isinstance((x for x in range(1,10)), Iterable)# True
+isinstance([x for x in range(1,10)], Iterable)# True
+isinstance(100, Iterable)# False
+isinstance({}, Iterator) # False
+isinstance([], Iterator)# False
+isinstance('abs', Iterator)# False
+isinstance((x for x in range(1,10)), Iterator)# True
+isinstance([x for x in range(1,10)], Iterator)# False
+isinstance(100, Iterator)# False
+```
+
+
+
+**Python的`for`循环本质上就是通过不断调用`next()`函数实现的**
+
+生成器不但可以作用于`for`循环，还可以被`next()`函数不断调用并返回下一个值，直到最后抛出`StopIteration`错误表示无法继续返回下一个值了，**所以生成器既是迭代器，也是可迭代对象**
+
+你可能会问，为什么`list`、`dict`、`str`等数据类型不是`Iterator`？
+
+> 这是因为Python的`Iterator`对象表示的是一个数据流，Iterator对象可以被`next()`函数调用并不断返回下一个数据，直到没有数据时抛出`StopIteration`错误。可以把这个数据流看做是一个有序序列，但我们却不能提前知道序列的长度，只能不断通过`next()`函数实现按需计算下一个数据，所以`Iterator`的计算是惰性的，只有在需要返回下一个数据时它才会计算。
+
+`Iterator`甚至可以表示一个无限大的数据流，例如全体自然数。而使用list是永远不可能存储全体自然数的。
+
+# 函数
+
+## 定义函数
 > 定义一个函数要使用def语句，依次写出函数名、括号、括号中的参数和冒号:，然后，在缩进块中编写函数体，函数的返回值用return语句返回
 ```python
 def my_abs(x):
@@ -542,7 +691,7 @@ def power(x, n):
         s = s * x
     return s
 ```
-### 默认参数
+## 默认参数
 对于power函数，不传入第二个参数默认是2
 ```python
 def power(x, n = 2):
@@ -609,7 +758,7 @@ Python函数在定义的时候，默认参数L的值就被计算出来了，即[
 
 !>  定义默认参数要牢记一点：默认参数必须指向不变对象！
 
-### 可变参数
+## 可变参数
 
 可变参数就是传入的参数个数是可变的
 
@@ -635,7 +784,7 @@ sum(*nums) # *nums表示把nums这个list的所有元素作为可变参数传进
 
 
 
-### 关键字参数
+## 关键字参数
 
 > 可变参数允许你传入0个或任意个参数，这些可变参数在函数调用时自动组装为一个tuple。而关键字参数允许你传入0个或任意个含参数名的参数，这些关键字参数在函数内部自动组装为一个dict
 
@@ -664,7 +813,7 @@ def person(name, age, **kw):
 
 
 
-### 命名关键字参数
+## 命名关键字参数
 
 如果要限制关键字参数的名字，就可以用命名关键字参数，例如，只接收`city`和`gender`作为关键字参数。这种方式定义的函数如下：
 
@@ -693,24 +842,120 @@ def person(name, age, *args, city, job):
 
 使用命名关键字参数时，要特别注意，如果没有可变参数，就必须加一个`*`作为特殊分隔符
 
-### 参数组合
+## 参数组合
 
 在Python中定义函数，可以用必选参数、默认参数、可变参数、关键字参数和命名关键字参数，这5种参数都可以组合使用。但是请注意，参数定义的顺序必须是：**必选参数、默认参数、可变参数、命名关键字参数和关键字参数**
 
-## 函数式编程
+# 函数式编程
 
-### 高阶函数
+`Iterable` vs `Iterator`
 
-### 匿名函数
+我们弄清楚两个概念，可迭代对象和迭代器
 
-### 返回函数
+可以直接作用于`for`循环的数据类型有以下几种：
 
-### 偏函数
+一类是集合数据类型，如`list`、`tuple`、`dict`、`set`、`str`等；
 
-### 装饰器
+一类是`generator`，包括生成器和带`yield`的generator function。
+
+这些可以直接作用于`for`循环的对象统称为可迭代对象：`Iterable`
+
+```python
+>>> from collections.abc import Iterable
+>>> isinstance([], Iterable)
+True
+>>> isinstance({}, Iterable)
+True
+>>> isinstance('abc', Iterable)
+True
+>>> isinstance((x for x in range(10)), Iterable)
+True
+>>> isinstance(100, Iterable)
+False
+```
+
+## 匿名函数
+
+格式：
+
+`lambda x: pass`
+
+## 高阶函数
+
+函数本身也是变量，也可以作为另外一个函数的参数传入，函数也可以返回函数
+
+map filter sorted
+
+`map(f, Iterable)`
+
+`map()`函数接收两个参数，一个是函数，一个是`Iterable`，`map`将传入的函数依次作用到序列的每个元素，并把结果作为新的`Iterator`返回
+
+```python
+>>>list(map(lambda x: x*x, [1,2, 3]))
+[1, 4, 9]
+```
+
+`filter(predictFn, Iterable)`
+
+和`map()`类似，`filter()`也接收一个函数和一个序列。和`map()`不同的是，`filter()`把传入的函数依次作用于每个元素，然后根据返回值是`True`还是`False`决定保留还是丢弃该元素
+
+```python
+>>>list(filter(lambda x: x > 0, [-1, 30,70,-230]))
+[30,70]
+
+```
+
+?> _Tips_ 注意到`map`,`filter()`函数返回的都是一个`Iterator`，也就是一个惰性序列，所以需要用`list()`函数获得所有结果并返回list。
+
+sorted
+
+对序列排序，改变原序列，返回新序列，对于数值型，默认按照从小到大排序
+
+```python
+>>> l = [4, -5,6, -8]
+>>> s = sorted(l)
+>>> l
+ [-8, -5, 4, 6]
+>>> s
+ [-8, -5, 4, 6]
+```
+sorted函数还可以接受一个key命名关键字参数,key指定的函数将作用于list的每一个元素上，并根据key函数返回的结果进行排序
+
+```python
+>>> sorted(l, key=abs) #按照绝对值大小升序
+[4, -5, 6, -8]
+```
+sorted函数还可以接受一个reverse命名关键字参数，默认是False,代表升序，设置成True,代表降序排列
+
+```python
+>>> sorted(l, key=abs, reverse=True) #按照绝对值大小降序
+[-8, 6, -5, 4]
+```
+字符串序列，按照ascii码值排序
+
+```python
+>>> l = ['ZXX', 'bs', 'ADFD' ,'bA']
+l = ['ADFD','ZXX', 'bs','bA']
+```
+忽略大小写
+```python
+>>> sorted(l, key=str.lower)
+['ADFD', 'bA', 'bs', 'ZXX']
+```
+忽略大小写，根据ascii升序
+```python
+>>> sorted(l, key=str.lower, reverse=False)
+['ZXX', 'bs', 'bA', 'ADFD']
+```
+
+## 返回函数
+
+## 偏函数
+
+## 装饰器
 
 
-## 面向对象
+# 面向对象
 
 python中定义类
 
@@ -783,7 +1028,7 @@ isinstance(cat, Cat)
 
 ## 面向对象高级编程
 
-### \_\_slots\_\_
+## \_\_slots\_\_
 限制实例属性
 要限制实例的属性怎么办？比如，只允许对Person实例添加name和age属性
 为了达到限制的目的，Python允许在定义class的时候，定义一个特殊的__slots__变量，来限制该class实例能添加的属性：
@@ -803,3 +1048,136 @@ p1.score = 30 # 由于于'score'没有被放到__slots__中，所以不能绑定
  class Bird(Animal, Flyable):
     pass
  ```
+
+# 正则表达式
+
+正则表达式和语言无关
+
+元字符一览表
+
+|   元字符       | 描述                                                         |
+| :--------------------------------- | :------------------------------------- |
+| . | 匹配任意的字符，包括换行符 |
+| ^            | 匹配输入字符串的开始位置。如果设置了 RegExp 对象的 Multiline 属性，^ 也匹配 '\n' 或 '\r' 之后的位置 |
+| $            | 匹配输入字符串的结束位置。如果设置了RegExp 对象的 Multiline 属性，$ 也匹配 '\n' 或 '\r' 之前的位置 |
+| **+**        | 匹配前面的子表达式一次或多次。例如，'zo+' 能匹配 "zo" 以及 "zoo"，但不能匹配 "z"。+ 等价于 {1,}。 |
+| *            | 匹配前面的子表达式零次或多次。例如，zo* 能匹配 "z" 以及 "zoo"。* 等价于{0,}。 |
+| ?            | 匹配前面的子表达式零次或一次。例如，"do(es)?" 可以匹配 "do" 或 "does" 。? 等价于 {0,1}。 |
+| {n}          | n 是一个非负整数。匹配确定的 n 次。例如，'o{2}' 不能匹配 "Bob" 中的 'o'，但是能匹配 "food" 中的两个 o。 |
+| {n,}         | n 是一个非负整数。至少匹配n 次。例如，'o{2,}' 不能匹配 "Bob" 中的 'o'，但能匹配 "foooood" 中的所有 o。'o{1,}' 等价于 'o+'。'o{0,}' 则等价于 'o*'。 |
+| {n,m}        | m 和 n 均为非负整数，其中n <= m。最少匹配 n 次且最多匹配 m 次。例如，"o{1,3}" 将匹配 "fooooood" 中的前三个 o。'o{0,1}' 等价于 'o?'。请注意在逗号和两个数之间不能有空格。 |
+| ?            | 当该字符紧跟在任何一个其他限制符 (*, +, ?, {n}, {n,}, {n,m}) 后面时，匹配模式是非贪婪的。非贪婪模式尽可能少的匹配所搜索的字符串，而默认的贪婪模式则尽可能多的匹配所搜索的字符串。例如，对于字符串 "oooo"，'o+?' 将匹配单个 "o"，而 'o+' 将匹配所有 'o'。 |
+| x\|y         | 匹配 x 或 y。例如，'z\|food' 能匹配 "z" 或 "food"。'(z\|f)ood' 则匹配 "zood" 或 "food"。 |
+| [xyz]        | 字符集合。匹配所包含的任意一个字符。例如， '[abc]' 可以匹配 "plain" 中的 'a'。 |
+| [^xyz]       | 负值字符集合。匹配未包含的任意字符。例如，`'[^abc]'`可以匹配 "plain" 中的'p'、'l'、'i'、'n'。 |
+| (pattern)    | 匹配 pattern 并获取这一匹配。所获取的匹配可以从产生的 Matches 集合得到，在VBScript 中使用 SubMatches 集合，在JScript 中则使用 $0…$9 属性。要匹配圆括号字符，请使用 '\(' 或 '\)'。 |
+| `(?:pattern)`  | 匹配 pattern 但不获取匹配结果，也就是说这是一个非获取匹配，不进行存储供以后使用。这在使用 "或" 字符 (\|) 来组合一个模式的各个部分是很有用。例如， 'industr(?:y\|ies) 就是一个比 'industry\|industries' 更简略的表达式 |
+| `(?=pattern)`  | 正向肯定预查（look ahead positive assert），在任何匹配pattern的字符串开始处匹配查   找字符串。这是一个非获取匹配，也就是说，该匹配不需要获取供以后使用。例如，"Windows(?=95\ |
+| `(?!pattern)`  | 正向否定预查(negative assert)，在任何不匹配pattern的字符串开始处匹配查找字符串。这是一个非获取匹配，也就是说，该匹配不需要获取供以后使用。例如"Windows(?!95\|98\|NT\|2000)"能匹配"Windows3.1"中的"Windows"，但不能匹配"Windows2000"中的"Windows"。预查不消耗字符，也就是说，在一个匹配发生后，在最后一次匹配之后立即开始下一次匹配的搜索，而不是从包含预查的字符之后开始。 |
+|    `(?<=pattern)`    | 反向(look behind)肯定预查，与正向肯定预查类似，只是方向相反。例如，"`(?<=95|98|NT|2000)Windows`"能匹配"`2000Windows`"中的"`Windows`"，但不能匹配"`3.1Windows`"中的"`Windows`"。 |
+| `(?<!pattern)` | 反向(look behind)肯定预查，与正向肯定预查类似，只是方向相反。"(?<=95\|95\|98\|2000)Windows"能匹配"`2000Windows`"中的"`Windows`"，但不能匹配"`3.1Windows`"中的"`Windows`"。 |
+| \d           | 匹配一个数字字符，等价于 [0-9]                               |
+| \D           | 匹配一个非数字字符                                           |
+| \s           | 匹配任何空白字符，包括空格、制表符、换页符等等               |
+| \S           | 匹配任何非空白字符                                           |
+| \w           | 匹配字母、数字、下划线。等价于'[A-Za-z0-9_]'                 |
+| \W           | 匹配非字母、数字、下划线。等价于 `'[^A-Za-z0-9_]'`           |
+| \b           | 匹配一个单词边界，也就是指单词和空格间的位置。例如， 'er\b' 可以匹配"never" 中的 'er'，但不能匹配 "verb" 中的 'er'。 |
+| \B           | 匹配非单词边界。'er\B' 能匹配 "verb" 中的 'er'，但不能匹配 "never" 中的 'er'。 |
+
+如果要表示元字符本身，需要\转义
+
+## `re`模块常用方法总结
+
+Python提供`re`模块，包含所有正则表达式的功能
+
+`match(pattern, string, flags=0) -> match object or None`
+
+`search(pattern, string, flags=0) -> match object or None`
+
+分组
+
+```python
+>>> m = re.match(r'^(\d{3})-(\d{3,8})$', '010-12345')
+>>> m
+<re.Match object; span=(0, 9), match='010-12345'>
+>>> m.group(0)
+'010-12345'
+>>> m.group(1)
+'010'
+>>> m.group(2)
+'12345'
+```
+
+?> _Tips_  `group(0)`永远是原始字符串，`group(1)`、`group(2)`……表示第1、2、……个子串。
+
+字符串`life is short, use python`，提取life和python之间的字符
+
+```python
+import re
+str1 = 'life is short, use python'
+r = re.match('life(.*)python', str1)
+print(r.groups()[0])
+print(r.group(1))
+```
+
+groups()方法返回匹配字串构成的元祖，并且里面不包括原始字符串
+
+贪婪匹配和非贪婪匹配
+
+```python
+import re
+>>> re.match(r'^(\d+?)(0*)$', '102300').groups()
+('1023', '00')
+>>> re.match(r'^(\d+?)(0*)$', '102300').groups()
+('1023', '00')
+```
+
+字符串查找功能
+
+`findall(pattern, string, flags=0) -> list`
+
+```python
+import re
+source = 'Python|C|Java|c'
+r = re.findall('Python', source)
+print(r)   # ['Python']
+r2 = re.findal('c',source, re.I) # 第三个参数表示忽略大小写
+```
+
+字符串替换功能
+
+`sub(pattern, repl, string, count=0, flags=0) -> str`
+
+repl可以是替换字符串，也可以是一个返回字符串的函数
+
+count=0表示全局匹配，count=1只匹配一次就结束
+
+flags表示匹配模式
+
+把字符串中的C#替换掉，忽略大小写
+
+```python
+import re
+source = r'Python|C#|Java|c#|JS|C#'
+def convert(value):
+    # value是一个match对象
+    print(value)
+    return ''
+r2 = re.sub(r'C#',convert, source, 0, re.I)
+print(r2) # 'Python||Java||JS|'
+```
+
+
+
+练习题：
+
+1. 验证邮箱
+2. 价格格式化， 整数部分每三位用逗号分隔， 10002332.08转换为10，002，332.08
+
+anyway, 正则表达式很强大，想深入的童鞋自己多去去研究吧！
+
+# 高级语法语用法
+
+## 枚举
+
