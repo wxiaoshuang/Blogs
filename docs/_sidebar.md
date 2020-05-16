@@ -9,6 +9,7 @@
      * [Reflect](/es6/Reflect.md)
      * [类](/es6/类.md)
 * **vue**
+     * [原理分析](/vue/principle/)
 * **react**
 * **TypeScript**
      * [入门教程](/typescript/guidebook/)

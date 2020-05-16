@@ -1,4 +1,4 @@
-# JavaScript
+# 
 
 ## 常见问题
 
@@ -11,7 +11,9 @@
 
 ## 欺骗词法作用域
 
-> 词法作用域由写代码期间函数所声明的位置来定义，javascript有两种机制(eval()、with)在运行时来修改词法作用域，这样做通常会导致性能下降，内存泄漏问题。
+首先明确一点，js是词法作用域，词法作用域由写代码期间函数所声明的位置来定义，而不是调用的时候确定的，但是js可以有方法欺骗此法作用域
+
+> javascript有两种机制(eval()、with)在运行时来修改词法作用域，这样做通常会导致性能下降，内存泄漏问题。
 
 - **eval函数接收一个字符串为参数，解析字符串生成代码并运行**
 
@@ -29,7 +31,7 @@ test("var a = 3", 2); // 3 2
 console.log(a); // 1
 ```
 
-上面这段代码示例，eval调用的str相当于在test函数作用域内部声明了一个新的变量b，当console.log()在打印时会在foo函数内部找到a和b，将无法找到外部的a，因此最终输出结果是3和2，最外层a仍就输出是1，两者比较可以看到效果。
+上面这段代码示例，eval调用的str相当于在test函数作用域内部声明了一个新的变量a，当console.log()在打印时会在foo函数内部找到a和b，将无法找到外部的a，因此最终输出结果是3和2，最外层a仍就输出是1，两者比较可以看到效果。
 
 - **with通常被当作重复引用同一个对象中的多个属性的快捷方式**
 
@@ -124,21 +126,24 @@ parseFloat("1234acv") //1234
 ### 转Boolean
 调用Boolean显示转换
 
-# 数组常用方法总结
-## 数组去重
+## 数组常用方法总结
+
+### 数组去重
+
+数组去重方法网上十几种之多，这里只总结了自己觉得好用的几种
 
 - **1 Set数组去重**
 
 > ES6新的数据结构Set，类似于数组，它的元素都是唯一的。
 
 ```js
-let arr = [1, 22, 33, 44, 22, 44];
-
-console.log([...new Set(arr)]); //[1, 22, 33, 44]
-
+var arr = [1,1,'true','true',true,true,undefined,undefined, null,null, NaN, NaN,'NaN', 0, 0, [], [],{},{}];
+var res = [...new Set(arr)]
+console.log(res) 
+// [ 1, 'true', true, undefined, null, NaN, 'NaN', 0, [], [], {}, {} ]
 ```
-
-- **2 reduce数组对象去重**
+不考虑兼容性，这种去重的方法代码最少。这种方法无法去掉空对象,空数组
+- **2  reduce + includes**
 
 > reduce对数组中的每一个元素依次执行回调函数，不含数组中未赋值、被删除的元素，回调函数接收四个参数
 
@@ -149,54 +154,154 @@ console.log([...new Set(arr)]); //[1, 22, 33, 44]
   * ```array```：调用 ```reduce``` 的数组
 * ```initialValue```：可选，作为第一次调用 ```callback``` 的第一个参数。
 
-示例：
+```javascript
+function uniqByReduce(arr) {
+   return arr.reduce((prev, curr) => prev.includes(curr)? prev: [...prev, curr],[])
+}
+var arr = [1,1,'true','true',true,true,undefined,undefined, null,null, NaN, NaN,'NaN', 0, 0, [], [],{},{}]
+console.log(uniqByReduce(arr))
+// [ 1, 'true', true, undefined, null, NaN, 'NaN', 0, [], [], {}, {}]
+```
+
+- **3  filter + indexOf**
 
 ```js
-// 简单数组去重
-function uniq(arr) {
-   let hash = {};
-   
-   function unique(arr){
-       return arr.reduce(function(previousValue, currentValue, index, array){
-           hash[currentValue] ? null : hash[currentValue] = true && previousValue.push(currentValue);
-   
-           return previousValue
-       }, []);
-   } 
-   unique(arr)
-   return arr
+var arr = [1,1,'true','true',true,true,undefined,undefined, null,null, NaN, NaN,'NaN', 0, 0, [], [],{},{}]
+function uniqByFilter(arr) {
+    return arr.filter((v, i) => {
+        return arr.indexOf(v) === i
+    })
 }
-let arr = [10, 30, 40, 40]
-uniq(arr)
-console.log(arr);
-// 数组对象去重
-function uniqBy(arr, key) {
-    let hash = {};
-       
-       function unique(arr, key){
-           return arr.reduce(function(previousValue, currentValue, index, array){
-               hash[currentValue[key]] ? null : hash[currentValue[key]] = true && previousValue.push(currentValue);
-       
-               return previousValue
-           }, []);
-       } 
-       unique(arr, key)
-       return arr
-}
-const uniqueArr = uniqBy([{name: 'zs', age: 15}, {name: 'lisi'}, {name: 'zs'}], 'name');
+console.log(uniqByFilter(arr));
+// [ 1, 'true', true, undefined, null, 'NaN', 0, [], [], {}, {} ]
+```
+无法去掉空对象,空数组, NaN全部被筛掉了
 
-console.log(uniqueArr); // [{name: 'zs', age: 15}, {name: 'lisi'}]
+- **4 filter + hasOwnProperty**
+```javascript
+function uniq(arr) {
+    var obj = {};
+    return arr.filter(function(item, index, arr){
+        return obj.hasOwnProperty(typeof item + item) ? false : (obj[typeof item + item] = true)
+    })
+}
+console.log(uniq(arr));
+[ 1, 'true', true, undefined, null, NaN, 'NaN', 0, [], {} ]
+```
+注意：`typeof item + item`的执行顺序是`typeof item`然后再与后面的item相加
+这种方法最好，可以将空数组和空对象也去重
+
+- **5 map**
+
+```javascript
+function uniqByMap() {
+    let map = new Map()
+    let res = []  // 数组用于返回结果
+    for (let i = 0; i < arr.length; i++) {
+        if(!map.has(arr[i])) {  // 如果有该key值
+            res.push(arr[i])
+        }
+        map.set(arr[i], true)  // 如果没有该key值
+    }
+    return res
+}
+console.log(uniqByMap(arr));
+// [ 1, 'true', true, undefined, null, NaN, 'NaN', 0, [], [], {}, {}]
+```
+不能去重空数组，空对象，将这种方法用`typeof item + item`改造一下就可以实现数组和对象的去重了
+```javascript
+function uniqByMap() {
+    let map = new Map()
+    let res = []
+    for (let i = 0; i < arr.length; i++) {
+        let key = typeof arr[i] + arr[i] // 构造key
+        if(!map.has(key)){  // 如果有该key值
+            res.push(arr[i])
+        }
+        map.set(key, true)  // 如果没有该key值
+    }
+    return res
+}
+console.log(uniqByMap(arr));
+// [ 1, 'true', true, undefined, null, NaN, 'NaN', 0, [], [], {}, {}]
+```
+
+上面的方法适用于数组的元素是基本数据类型吗，如果数组的元素是对象，想根据对象的某个key去重
+
+
+
+```javascript
+let person = [
+     {id: 0, name: "小明"},
+     {id: 1, name: "小张"},
+     {id: 2, name: "小李"},
+     {id: 3, name: "小孙"},
+     {id: 1, name: "小周"},
+     {id: 2, name: "小陈"},   
+]
+function uniqBy(arr, key) {
+	let hash = {}
+    return arr.reduce((prev, next) => {
+       hash[next[key]] ? "" : hash[next[key]] = true && cur.push(next);
+       return cur;
+    }, [])
+}
+```
+
+### 深度降维
+
+- **`递归`**
+
+```javascript
+function flattenDeep(arr){
+    let ret = [];
+    let toArr = function(arr){
+        arr.forEach(function(item){
+            Array.isArray(item) ? toArr(item) : ret.push(item);
+        });
+    }
+    toArr(arr);
+    return ret;
+}
+```
+
+- **`栈`**
+
+不使用递归，使用 stack 无限反嵌套多层嵌套数组
+
+```javascript
+function flattenDeep(arr) {
+    const stack = [...arr],res = []
+    while(stack.length) {
+        let topEle = stack.pop()
+        if(Array.isArray(topEle)) {
+            stack.push(...topEle)
+        } else {
+            res.push(topEle)
+        }
+    }
+    res.reverse()
+    return res
+}
 ```
 
 
-## 数组交集
 
-<!-- tabs:start -->
-
-### **js**
+- **`reduce + concat`**
 
 ```js
-function intersection(arr1, arr2 ) {
+function flattenDeep(arr) {
+   return arr.reduce((acc, val) => Array.isArray(val) ? acc.concat(flattenDeep(val)) : acc.concat(val), []);
+}
+```
+### 数组交集
+
+求两个数组的交集，交集里面允许有重复元素
+
+方法1:双指针
+```js
+// 
+function intersection(arr1, arr2) {
     if(!arr1.length) {
         return arr2
     }
@@ -222,97 +327,25 @@ function intersection(arr1, arr2 ) {
     return res
 }
 ```
-
-### **typescript**
-
-```typescript
-function intersection<T>(arr1: Array<T>, arr2: Array<T>): Array<T> {
-    if(!arr1.length) {
-        return arr2
-    }
-    if(!arr2.length) {
-        return arr1
-    }
-    arr1.sort((a, b) => a - b)
-    arr2.sort((a, b) => a - b)
-    let i: number = 0
-    let j: number = 0
-    let res:Array<T>
-    while(i < arr1.length && j < arr2.length) {
-        if(arr1[i] < arr2[j]) {
-            i++
-        } else if(arr1[i] > arr2[j]) {
-            j++
+方法2: map计数
+```javascript
+function intersection(arr1, arr2) {
+    let map = new Map()
+    let res = []
+    for (let i = 0; i < arr1.length; i++) {
+        if(!map.has(arr1[i])) {
+            map.set(arr1[i], 1)
         } else {
-            res.push(arr1[i])
-            i++
-            j++
+            map.set(arr1[i],  map.get((arr1[i]) + 1))
         }
     }
-    return res
-}
-```
-
-<!-- tabs:end -->
-
-## 数组降维
-
-- **方法一：将数组字符串化**
-
-> 利用数组与字符串的隐式转换，使用+符号链接一个对象，javascript会默认调用toString方法转为字符串，再使用字符串分割成字符串数组，最后转成数值形数组
-
-```js
-let arr = [[222, 333, 444], [55, 66, 77], 11, ]
-arr += '';
-arr = arr.split(',');
-arr = arr.map(item => Number(item));
-
-console.log(arr); // [222, 333, 444, 55, 66, 77, 11]
-```
-
-- **方法二：利用apply和concat转换**
-
-> concat() 方法用于连接两个或多个数组。该方法不会改变现有的数组，而仅仅会返回被连接数组的一个副本。
-
-```js
-{
-    function reduceDimension(arr) {
-        return Array.prototype.concat.apply([], arr);
+    for (let i = 0; i < arr2.length; i++) {
+        let val = map.get((arr2[i]))
+        if(val && val > 0) {
+            res.push(arr2[i])
+            map.set(arr2[i], val - 1)
+        }
     }
-
-    console.log(reduceDimension([[123], 4, [7, 8],[9, [111]]]));
-    // [123, 4, 7, 8, 9, Array(1)]
 }
-
-```
-- **方法三 自定义函数实现**
-
-> 推荐使用，经测试这个是执行效率最高的。
-
-```js
-function reduceDimension(arr){
-    let ret = [];
-
-    let toArr = function(arr){
-        arr.forEach(function(item){
-            item instanceof Array ? toArr(item) : ret.push(item);
-        });
-    }
-
-    toArr(arr);
-
-    return ret;
-}
-
-let arr = [[12], 4, [333, [4444, 5555]], [9, [111, 222]]];
-
-for(let i = 0; i < 100000; i++){
-    arr.push(i);
-}
-
-let start = new Date().getTime();
-
-console.log('reduceDimension: ', reduceDimension(arr));
-console.log('耗时: ', new Date().getTime() - start);
 ```
 
