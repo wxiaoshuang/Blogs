@@ -24,13 +24,13 @@ leetcode刷题，英文和中文先刷一遍
 
 **第二遍**
   自己在IDE里面写
-  
+
 **第三遍**
   24小时后再去练习
-  
+
 **第4遍**
   一周后再练习
-  
+
 **第5遍**
    一个月后回顾
 
@@ -42,7 +42,7 @@ leetcode刷题，英文和中文先刷一遍
 类比一下，空间复杂度全称就是**渐进空间复杂度**，表示算法的存储空间与数据规模之间的增长关系。
 #### 递归：主要分析出递归树
 
-## 3 数组 链表 跳表
+## 数组 链表 跳表
 
 线性结构：数据元素之间存在一对一的线性关系，
 
@@ -58,31 +58,136 @@ leetcode刷题，英文和中文先刷一遍
 
 leetcode解析
 
-三数之和
-
-给定一个包含 *n* 个整数的数组 `nums`，判断 `nums` 中是否存在三个元素 *a，b，c ，*使得 *a + b + c =* 0 ？找出所有满足条件且不重复的三元组。
-
-**注意：**答案中不可以包含重复的三元组。
+- **`三数之和`**
 
 ```markdown
+给定一个包含 n 个整数的数组nums，判断 nums 中是否存在三个元素 a，b，c ，使得 a + b + c = 0 ？找出有满足条件且不重复的三元组。
+
+注意：答案中不可以包含重复的三元组。
 给定数组 nums = [-1, 0, 1, 2, -1, -4]，满足要求的三元组集合为：
 [
   [-1, 0, 1],
   [-1, -1, 2]
 ]
+```
+题解：
+先排序，然后运用双指针
+<!-- tabs:start -->
+    
+### **javascript**
 
-来源：力扣（LeetCode）
-链接：https://leetcode-cn.com/problems/3sum
-著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+```javascript
+/**
+ * @param {number[]} nums
+ * @return {number[][]}
+ */
+var threeSum = function(nums) {
+    if(!nums || nums.length  < 3) {
+        return []
+    }
+    nums.sort((a, b) => a - b)
+    let res = []
+    let i = 0
+    while(i < nums.length) {
+        if(nums[i] > 0) break
+        if(i > 0 && nums[i] === nums[i-1]) continue
+        let l = i+1;
+        let r = nums.length - 1
+        while(l < r) {
+           let sum = nums[i] + nums[l] + nums[r]
+           if(sum === 0) {
+             res.push([nums[i], nums[l], nums[l]])
+             while(l < r && nums[l] === nums[l+1]) l++
+             while(l < r && nums[r] === nums[r-1]) r--
+             l++
+             r--
+           } else if(sum < 0) {
+               l++
+           } else {
+               r--
+           }
+        }
+        i++
+    }
+    return res
+};
+
 ```
 
-
+### **java**
 
 ```java
 class Solution {
-
+    public List<List<Integer>> threeSum(int[] nums) {
+         List<List<Integer>> res = new ArrayList<>();
+        if(nums == null || nums.length  < 3) {
+            return res;
+        }
+        Arrays.sort(nums);
+        int i = 0;
+        while(i < nums.length) {
+            if(nums[i] > 0) break;
+            if(i > 0 && nums[i] == nums[i-1]) continue;
+            int l = i+1;
+            int r = nums.length - 1;
+            while(l < r) {
+               int sum = nums[i] + nums[l] + nums[r];
+               if(sum == 0) {
+                 res.add(Arrays.asList(nums[i], nums[l], nums[l]));
+                 while( l < r && nums[l] == nums[l+1]) l++;
+                 while( l < r && nums[r] == nums[r-1]) r--;
+                 l++;
+                 r--;
+               } else if(sum < 0) {
+                   l++;
+               } else {
+                   r--;
+               }
+            }
+            i++;
+        }
+        return res;
+    }
 }
 ```
+### **python**
+
+```python
+class Solution:
+    def threeSum(self, nums: List[int]) -> List[List[int]]:
+       res=[]
+       if not nums or len(nums) < 3:
+           return res
+       i, n = 0, len(nums)
+       nums.sort()
+       for i in range(n):
+           if nums[i] > 0:
+               break
+           if i > 0 and nums[i] == nums[i-1]:
+               continue
+           l = i+1
+           r = n - 1
+           while l < r:
+               sum = nums[i] + nums[l] + nums[r]
+               if sum == 0:
+                   res.append([nums[i], nums[l], nums[r]])
+                   while l < r and nums[l] == nums[l+1]:
+                       l+=1
+                   while l < r and nums[r] == nums[r-1]:
+                       r-=1
+                   l+=1
+                   r-=1
+               elif sum < 0:
+                   l+=1
+               else:
+                   r-=1
+       return res   
+```
+
+<!-- tabs:end -->
+
+-**`合并两个有序数组`**
+
 
 ### 链表
 
@@ -1203,18 +1308,105 @@ public class QuickSort {
 
 >计数排序是一个非基于比较的[排序算法](https://baike.baidu.com/item/排序算法/5399605)，该算法于1954年由 Harold H. Seward 提出。它的优势在于在对一定范围内的整数排序时，它的复杂度为Ο(n+k)（其中k是整数的范围），快于任何比较排序算法。 [1] 当然这是一种牺牲空间换取时间的做法，而且当O(k)>O(n*log(n))的时候其效率反而不如基于比较的排序（基于比较的排序的时间复杂度在理论上的下限是O(n*log(n)), 如归并排序，堆排序）
 
-## 19 字符串
+##  字符串
+字符串匹配算法就是在一个字符串A中查找是否包含一个字符串B,其中A叫做主串，B叫做模式串
+为了方便下面匹配算法的描述，A的长度记为n,B的长度记为m,那么就有(n>=m)
+### Brute-Force(BF)
+暴力匹配算法的思想用一句话概括就是：
+在主串中，分别检查起始位置是0，1，2...n-m且长度为m的 n - m +1个子串，看看是否可以和模式串匹配，如果匹配，模式串后移一位，如果不匹配，
+主串的索引位置移动到下一位, 模式串回退到第一位，继续比较
 
-### 字符串匹配算法
 
-##### 暴力匹配算法
+![BF.png](./images/BF.png)
 
-##### Rabin-karp
 
+```javascript
+function bruteForce(str, pattern) {
+   let n = str.length
+   let m = pattern.length
+   if (m > n) {
+       return -1
+   }
+   for(let i = 0; i < n - m; i++) {
+       let j = 0
+       // 匹配，模式串后移,继续比较
+       while(j < m && pattern[j] === str[i+j]) {
+           j++
+       }
+       if(j === m) {
+          return i
+       }
+   }
+   return -1
+}
+```
+简单分析下时间复杂度：对比n-m+1次，每次对比m个字符，所以平均时间复杂度是O(n*m)
+
+### Rabin-karp(RK)
 
 ![](https://user-gold-cdn.xitu.io/2020/3/10/170c2bde37faf450?w=770&h=288&f=png&s=181432)
 
-##### KMP
+### Boyer-Moore(BM)
+[阮一峰字符串匹配的Boyer-Moore算法](http://www.ruanyifeng.com/blog/2013/05/boyer-moore_string_search_algorithm.html)
+
+### KMP
+主要是求next数组
+```javascript
+function kmp(str, pattern) {
+    function _getNext(pattern) {
+         let n= pattern.length
+         let count = 0
+         let next= Array.from({length:pattern.length}).fill(0)
+         for(let i = 1; i < n;i++) {
+             while(count > 0 && pattern[i] !== pattern[count]) {
+                 count = next[count-1]
+             }
+             if(pattern[i] === pattern[count]) {
+                 count++
+             }
+             next[i] = count
+         }
+         return next
+    }
+    function index(str, pattern) {
+        let next = _getNext(pattern)
+        let j = 0
+        for(let i = 0; i < str.length; i++) {
+            while(j > 0 && pattern[j] !== str[i]) {
+                j = next[j-1]
+            }
+        }
+        if(pattern[j] === str[i]) {
+            j++
+        }
+        if(j === pattern.length) {
+            return i - j + 1
+        }
+    }
+    function indexPositions(str,pattern) {
+            let j = 0
+            let next = _getNext(pattern)
+            let positions= []
+            for(let i = 0; i < str.length; i++) {
+                if(j > 0 && pattern[j] !== str[i]) {
+                    j = next[j-1]
+                }
+                if(pattern[j] === str[i]) {
+                    j++
+                }
+                if(j === pattern.length) {
+                    positions.push(i - j + 1)
+                    j = 0
+                }
+            }
+            return positions
+    }
+    return {
+        index: index(str, pattern), 
+        indexPositions: indexPositions(str, pattern)
+    }   
+}
+```
 
 
 

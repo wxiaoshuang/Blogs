@@ -4,8 +4,8 @@
 
 -  https://leetcode-cn.com/problems/container-with-most-water/
 -  https://leetcode-cn.com/problems/climbing-stairs/
--  [https://leetcode-cn.com/problems/3sum/](https://leetcode-cn.com/problems/3sum/)(高频老题）
-- https://leetcode-cn.com/problems/reverse-linked-list/
+-  [三数之和](https://leetcode-cn.com/problems/3sum/)(高频老题）
+-  https://leetcode-cn.com/problems/reverse-linked-list/
 -  https://leetcode-cn.com/problems/swap-nodes-in-pairs
 -  https://leetcode-cn.com/problems/linked-list-cycle
 -  https://leetcode-cn.com/problems/linked-list-cycle-ii

@@ -3,6 +3,7 @@
     * [博客语法](syntax.md)
 * **JavaScript**
      * [入门教程](/js/guidebook/)
+     * [设计模式](/js/design-pattern/)
 * **ES6**
      * [数组](/es6/数组.md)
      * [Promise](/es6/promise.md)
