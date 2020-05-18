@@ -831,9 +831,24 @@ bfs:用队列来实现
 
 题目：
 
+## 图论
+
 ## 最小生成树
 
-无项带权图
+最小生成树（MST):
+
+1. 给定一个带权无向联通图，如何选取一颗生成树，使树上所有边上权的总和为最小，这叫做最小生成树
+2. N个顶点，一定有N-1条边
+3. 包含全部顶点
+4. N-1条边都在图中
+
+最小生成树的两种算法-Prim算法和Krusal算法
+
+### Prim算法
+
+算法如下：
+
+
 
 ## 最短路径
 
@@ -1308,51 +1323,73 @@ public class QuickSort {
 
 >计数排序是一个非基于比较的[排序算法](https://baike.baidu.com/item/排序算法/5399605)，该算法于1954年由 Harold H. Seward 提出。它的优势在于在对一定范围内的整数排序时，它的复杂度为Ο(n+k)（其中k是整数的范围），快于任何比较排序算法。 [1] 当然这是一种牺牲空间换取时间的做法，而且当O(k)>O(n*log(n))的时候其效率反而不如基于比较的排序（基于比较的排序的时间复杂度在理论上的下限是O(n*log(n)), 如归并排序，堆排序）
 
-##  字符串
-字符串匹配算法就是在一个字符串A中查找是否包含一个字符串B,其中A叫做主串，B叫做模式串
-为了方便下面匹配算法的描述，A的长度记为n,B的长度记为m,那么就有(n>=m)
-### Brute-Force(BF)
-暴力匹配算法的思想用一句话概括就是：
-在主串中，分别检查起始位置是0，1，2...n-m且长度为m的 n - m +1个子串，看看是否可以和模式串匹配，如果匹配，模式串后移一位，如果不匹配，
-主串的索引位置移动到下一位, 模式串回退到第一位，继续比较
+## 19 字符串
 
+### 字符串匹配算法
 
-![BF.png](./images/BF.png)
+##### 暴力匹配算法
 
+##### Rabin-karp
 
-```javascript
-function bruteForce(str, pattern) {
-   let n = str.length
-   let m = pattern.length
-   if (m > n) {
-       return -1
-   }
-   for(let i = 0; i < n - m; i++) {
-       let j = 0
-       // 匹配，模式串后移,继续比较
-       while(j < m && pattern[j] === str[i+j]) {
-           j++
-       }
-       if(j === m) {
-          return i
-       }
-   }
-   return -1
-}
-```
-简单分析下时间复杂度：对比n-m+1次，每次对比m个字符，所以平均时间复杂度是O(n*m)
-
-### Rabin-karp(RK)
 
 ![](https://user-gold-cdn.xitu.io/2020/3/10/170c2bde37faf450?w=770&h=288&f=png&s=181432)
 
-### Boyer-Moore(BM)
-[阮一峰字符串匹配的Boyer-Moore算法](http://www.ruanyifeng.com/blog/2013/05/boyer-moore_string_search_algorithm.html)
+```typescript
+class KMP {
+     static indexPositions(str: string, pattern: string): number[] {
+        let j = 0;
+        let next: number[] = KMP.getNext(pattern)
+        let positions: number[] = []
+        for(let i = 0; i < str.length; i++) {
+            if(j > 0 && pattern[j] !== str[i]) {
+                j = next[j-1]
+            }
+            if(pattern[j] === pattern[i]) {
+                j++
+            }
+            if(j === pattern.length) {
+                positions.push(i - j + 1)
+                j = 0
+            }
+        }
+        return positions
+    }
+     static index(str: string, pattern: string): number {
+            let j = 0;
+            let next: number[] = KMP.getNext(pattern)
+            for(let i = 0; i < str.length; i++) {
+                if(j > 0 && pattern[j] !== str[i]) {
+                    j = next[j-1]
+                }
+                if(pattern[j] === pattern[i]) {
+                    j++
+                }
+                if(j === pattern.length) {
+                   return i - j + 1
+                }
+            }
+        }
+    private static getNext(pattern: string): number[] {
+        let n: number = pattern.length
+        let count: number = 0
+        let next:number[] = Array.from({length:pattern.length}).fill(0)
+        for(let i = 1; i < n;i++) {
+            while(count > 0 && pattern[i] !== pattern[count]) {
+                count = next[count-1]
+            }
+            if(pattern[i] === pattern[count]) {
+                count++
+            }
+            next[i] = count
+        }
+        return next
+    }
+}
 
-### KMP
-主要是求next数组
+```
+
 ```javascript
-function kmp(str, pattern) {
+function KMP(str, pattern) {
     function _getNext(pattern) {
          let n= pattern.length
          let count = 0
@@ -1385,13 +1422,13 @@ function kmp(str, pattern) {
     }
     function indexPositions(str,pattern) {
             let j = 0
-            let next = _getNext(pattern)
+            let next = KMP.getNext(pattern)
             let positions= []
             for(let i = 0; i < str.length; i++) {
                 if(j > 0 && pattern[j] !== str[i]) {
                     j = next[j-1]
                 }
-                if(pattern[j] === str[i]) {
+                if(pattern[j] === pattern[i]) {
                     j++
                 }
                 if(j === pattern.length) {
@@ -1400,12 +1437,15 @@ function kmp(str, pattern) {
                 }
             }
             return positions
-    }
+        }
     return {
-        index: index(str, pattern), 
-        indexPositions: indexPositions(str, pattern)
-    }   
+        index,
+    }
+    
 }
+
+```
+
 ```
 
 
@@ -1414,3 +1454,5 @@ function kmp(str, pattern) {
 
 DFS, BFS, DP
 
+
+```

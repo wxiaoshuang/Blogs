@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        body {
+            text-align:center;
+        }
+        #box {
+            width: 800px;
+            height: 200px;
+            border: 1px solid #000;
+            margin: 100px auto 10px;
+            font-size: 40px;
+            text-align: center;
+            line-height:  200px;
+        }
+    </style>
+</head>
+<body>
+<div id="box">
+1
+</div>
+<button id="btn">点击取消</button>
+<script>
+    let count =1
+    let box = document.querySelector('#box')
+    let btn = document.querySelector('#btn')
+    let debounced = debounce3(counter,10000, true)
+    box.onmousemove = debounced
+    btn.onclick = function() {
+        debounced.cancel()
+    }
+    function counter() {
+        count++
+        box.innerHTML = count
+    }
+    function debounce(fn,wait){
+        let timeId
+        return function(){
+            let context = this
+            timeId && clearTimeout(timeId)
+            // 重新开始及时
+            timeId = setTimeout(() => {
+                fn.apply(context, arguments)
+            }, wait)
+        }
+    }
+    function debounce2(fn, wait,immediate ) {
+        let timeId;
+
+        return function () {
+            let context = this;
+            let args = arguments;
+
+            if (timeId) clearTimeout(timeId);
+            if (immediate) {
+                // 如果已经执行过，不再执行
+                let callNow = !timeId;
+                timeId = setTimeout(function(){
+                    timeId = null;
+                }, wait)
+                if (callNow) fn.apply(context, args)
+            }
+            else {
+                timeId = setTimeout(function(){
+                    fn.apply(context, args)
+                }, wait);
+            }
+        }
+    }
+    function debounce3(fn, wait,immediate) {
+        let timeId;
+
+        let debounced = function () {
+            let context = this;
+            let args = arguments;
+
+            if (timeId) clearTimeout(timeId);
+            // 是否是立即执行
+            if (immediate) {
+                // 如果已经执行过，不再执行
+                let callNow = !timeId;
+                timeId = setTimeout(function(){
+                    timeId = null;
+                }, wait)
+                if (callNow) fn.apply(context, args)
+            }
+            else {
+                timeId = setTimeout(function(){
+                    fn.apply(context, args)
+                }, wait);
+            }
+        }
+        debounced.cancel = function() {
+            clearTimeout(timeId)
+            timeId = null
+        }
+        return debounced
+    }
+</script>
+</body>
+</html>
