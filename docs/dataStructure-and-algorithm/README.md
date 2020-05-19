@@ -835,14 +835,25 @@ bfs:用队列来实现
 
 ## 最小生成树
 
-最小生成树（MST):
+学习最小生成树算法之前我们先来了解下 下面这些概念：
 
-1. 给定一个带权无向联通图，如何选取一颗生成树，使树上所有边上权的总和为最小，这叫做最小生成树
-2. N个顶点，一定有N-1条边
-3. 包含全部顶点
-4. N-1条边都在图中
+**树**（Tree）：如果一个无向连通图中不存在回路，则这种图称为树。
 
-最小生成树的两种算法-Prim算法和Krusal算法
+**生成树** （Spanning Tree）：无向连通图G的一个子图如果是一颗包含G的所有顶点的树，则该子图称为G的生成树。
+
+生成树是连通图的极小连通子图。这里所谓极小是指：若在树中任意增加一条边，则将出现一条回路；若去掉一条边，将会使之变成非连通图。
+
+**最小生成树**（Minimum Spanning Tree，MST）：或者称为最小代价树Minimum-cost Spanning Tree, 对无向连通图的生成树，各边的权值总和称为生成树的权，权最小的生成树称为最小生成树。
+
+构成生成树的准则有三条：
+
+<1> 必须只使用该网络中的边来构造最小生成树。
+
+<2> 必须使用且仅使用n-1条边来连接网络中的n个顶点
+
+<3> 不能使用产生回路的边。 
+
+构造最小生成树的算法主要有：克鲁斯卡尔（Kruskal）算法和普利姆（Prim）算法, 他们都遵循以上准则。
 
 ### Prim算法
 
@@ -868,7 +879,7 @@ b.将v加入集合Vnew中，将<u, v>边加入集合Enew中；
 
 <!-- tabs:start -->
 
-### **java**
+### ****java****
 
 ```java
 package lesson;
@@ -1001,9 +1012,145 @@ public class Prim {
 ### Kruskal算法
 算法描述：
 
+1. 新建图G，G中拥有原图中相同的节点，但没有边；
+2. 将原图中所有的边按权值从小到大排序；
+3. 从权值最小的边开始，如果这条边连接的两个节点于图G中不在同一个连通分量中，则添加这条边到图G中；
+4. 重复3，直至图G中所有的节点都在同一个连通分量中。
+
+关于第3条：如何判断两个顶点是否在图G中处于一个联通分量？
+
+在构建最小生成树的时候，需要一个数组存储每个顶点的终点，然后判断两个顶点的终点是否相同，如果不同，说明就不在同一个联通分量中
+
+算法代码：
+
 ```java
-class Kruskal {
-    
+import java.util.*;
+
+public class Kruskal {
+    class Edge {
+        int start;
+        int end;
+        int weight;
+
+        public Edge(int start, int end, int weight) {
+            this.start = start;
+            this.end = end;
+            this.weight = weight;
+        }
+
+        @Override
+        public String toString() {
+            return "<" + start + "," + end + ">=" + weight;
+        }
+    }
+
+    private static final int INF = Integer.MAX_VALUE;
+    int[] data; // 顶点
+    int[][] matrix; // 邻接矩阵
+
+    //    List<Edge> edges; // 边
+    public static void main(String[] args) {
+        int[] data = new int[]{0, 1, 2, 3, 4, 5, 6};// 7个顶点
+        // 二维数组表示邻接矩阵，用来描述顶点相连的边的权重
+        int[][] matrix = new int[][]{
+                {INF, 5, 7, INF, INF, INF, 2},
+                {5, INF, INF, 9, INF, INF, 3},
+                {7, INF, INF, INF, 8, INF, INF},
+                {INF, 9, INF, INF, INF, 4, INF},
+                {INF, INF, 8, INF, INF, 5, 4},
+                {INF, INF, INF, 4, 5, INF, 6},
+                {2, 3, INF, INF, 4, 6, INF}
+        };
+        Kruskal k = new Kruskal(data, matrix);
+        k.kruskal();
+    }
+
+    public Kruskal(int[] data, int[][] matrix) {
+        this.data = data;
+        this.matrix = matrix;
+    }
+
+    public void kruskal() {
+        List<Edge> edges = this.getEdges(matrix);
+        int edgeNum = edges.size();
+        sortEdges(edges);
+        int[] ends = new int[edgeNum];
+        // 创建结果数组，保存最后的最小生成树
+        Edge[] res = new Edge[edgeNum];
+        int count = 0;
+        System.out.println(edges);
+        // 遍历edges，判断边是否构成了回路，如果没有，就加入，否在就寻找下一个边
+        for (int i = 0; i < edgeNum; i++) {
+            Edge edge = edges.get(i);
+            // 获取一条边的两个顶点的索引p1,p2
+            int p1 = getIndex(edge.start);
+            int p2 = getIndex(edge.end);
+            // p1和p2的终点
+            int end1 = getEnd(p1, ends);
+            int end2 = getEnd(p2, ends);
+            // 边的两个顶点的终点不同，加入不会构成回路，那么就可以加进去最小生成树
+            if (end1 != end2) {
+                ends[end1] = end2;
+                res[count++] = edge;
+            }
+            // 已经加了顶点-1条边，那么就可以终止循环了
+            if (count >= data.length - 1) break;
+        }
+        for (int i = 0; i < count; i++) {
+            System.out.println(res[i]);
+        }
+    }
+
+    // 获取顶点的索引
+    private int getIndex(int v) {
+        for (int i = 0; i < this.data.length; i++) {
+            if (this.data[i] == v) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * 获取下标为i的顶点的终点
+     *
+     * @param i    下标为i的顶点
+     * @param ends 记录了各个顶点的终点是哪个顶点（索引）
+     * @return 下标为i的顶点的终点索引
+     */
+    private int getEnd(int i, int[] ends) {
+        // 表示终点不是自身，因为初始化的时候ends[i]均为0
+        // while循环是要一直找下去，直到找到终点
+        while (ends[i] != 0) {
+            i = ends[i];
+        }
+        return i;
+    }
+
+    // 将矩阵处理成边
+    private List<Edge> getEdges(int[][] matrix) {
+        List<Edge> res = new ArrayList<>();
+        for (int i = 0; i < data.length; i++) {
+            // 自己不连接自己 j=i+1
+            for (int j = i + 1; j < data.length; j++) {
+                // 不连通的顶点不生成边
+                if (matrix[i][j] != INF) {
+                    res.add(new Edge(data[i], data[j], matrix[i][j]));
+                }
+            }
+        }
+        return res;
+    }
+
+    // 对边排序,按照权重升序
+    private void sortEdges(List<Edge> edges) {
+        Collections.sort(edges, new Comparator<Edge>() {
+            @Override
+            public int compare(Edge a, Edge b) {
+                return a.weight - b.weight;
+            }
+        });
+    }
 }
 ```
 
@@ -1615,3 +1762,7 @@ DFS, BFS, DP
 
 
 ```
+
+引用：
+
++ https://www.cnblogs.com/yoke/p/6697013.html
