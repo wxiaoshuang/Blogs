@@ -846,7 +846,166 @@ bfs:用队列来实现
 
 ### Prim算法
 
-算法如下：
+算法描述
+
+1).输入：一个加权连通图，其中顶点集合为V，边集合为E；
+
+2).初始化：Vnew = {x}，其中x为集合V中的任一节点（起始点），Enew = {},为空；
+
+3).重复下列操作，直到Vnew = V：
+
+a.在集合E中选取权值最小的边<u, v>，其中u为集合Vnew中的元素，而v不在Vnew[集合](https://baike.baidu.com/item/集合/2908132)当中，并且v∈V（如果存在有多条满足前述条件即具有相同权值的边，则可任意选取其中之一）；
+
+b.将v加入集合Vnew中，将<u, v>边加入集合Enew中；
+
+4).输出：使用集合Vnew和Enew来描述所得到的[最小生成树](https://baike.baidu.com/item/最小生成树)
+
+算法分析
+
+![prim](./images/prim.jpg)
+
+算法代码
+
+<!-- tabs:start -->
+
+### **java**
+
+```java
+package lesson;
+
+import java.util.Arrays;
+
+// prim算法
+public class Prim {
+    private static final int INF = Integer.MAX_VALUE;
+
+    public static void main(String[] args) {
+        int[] data = new int[]{0,1,2,3,4,5,6};// 7个顶点
+        // 二维数组表示邻接矩阵，用来描述顶点相连的边的权重
+        int[][] edges = new int[][]{
+                {INF, 5, 7, INF, INF, INF, 2},
+                {5, INF, INF, 9, INF, INF, 3},
+                {7, INF, INF, INF, 8, INF, INF},
+                {INF, 9, INF, INF, INF, 4, INF},
+                {INF, INF, 8, INF, INF, 5, 4},
+                {INF, INF, INF, 4, 5, INF, 6},
+                {2, 3, INF, INF, 4, 6, INF}
+        };
+        prim(data, edges, 0);// 从第二个顶点开始
+        System.out.println();
+        prim2(data, edges,0);
+    }
+
+    /**
+     * 时间复杂度O(n^3)
+     * @param data   存放顶点数据
+     * @param edges  邻接矩阵存储边的权重
+     * @param s      算法开始顶点
+     */
+    public static void prim(int[] data, int[][] edges, int s) {
+        int n = data.length;
+        int[] visited = new int[n];
+        visited[s] = 1;
+        // 用h1和h2记录两个顶点的下标
+        int h1 = -1;
+        int h2 = -1;
+        int minWeight = INF;
+        for (int k = 1; k < n; k++) {
+            // 确定这次生成的子图和哪个顶点的距离最近
+            for (int i = 0; i < n; i++) { // i表示被访问过的节点
+                for (int j = 0; j < n; j++) { // j表示未被访问过的节点
+                    if (visited[i] == 1 && visited[j] == 0 && edges[i][j] < minWeight) {
+                        minWeight = edges[i][j];
+                        h1 = i;
+                        h2 = j;
+                    }
+                }
+            }
+            System.out.println("边<" + data[h1] + "," + data[h2] + "> 权值:" + edges[h1][h2]);
+            visited[h2] = 1;
+            minWeight = INF;
+        }
+    }
+    // 时间复杂度O(n^2)
+    public static void prim2(int[] data, int[][] edges, int s)//普利姆算法（参数：邻接矩阵，起点（即第一个生成的点，可随便取））
+    {
+        int n = data.length;
+        int[] dist = new int[n];
+        int[] closest = new int[n];
+        int i, min, j, k;
+
+        //初始化closest数组，dist数组
+        for (i = 0; i < n; i++)//赋初值，即将closest数组都赋为节点s，dist数组赋为节点s到各节点的权重
+        {
+            closest[i] = s;
+            dist[i] = edges[s][i];// edges[s][i]的值指的是节点s到i节点的权重
+        }
+        dist[s] = 0; // 自己到自己的距离初始化为0，标记初始节点为已选节点
+
+        // 开始生成其他的节点
+        for (i = 1; i < n; i++) //接下来找剩下的v-1个节点
+        {
+            k = i;
+            // 找到一个节点，该节点到已选节点中的某一个节点的权值是当前最小的
+            min = INF;//INF表示正无穷（每查找一个节点，min都会重新更新为INF，以便获取当前最小权重的节点）
+            for (j = 0; j < n; j++)//遍历所有节点
+            {
+                if (dist[j] != 0 && dist[j] < min)//若该节点还未被选且权值小于之前遍历所得到的最小值
+                {
+                    min = dist[j];//更新min的值
+                    k = j;//记录当前最小权重的节点的编号
+                }
+            }
+
+            //输出被连接节点与连接节点，以及它们的权值
+            System.out.printf("边(%d,%d)权为:%d\n", closest[k], k, min);
+
+            dist[k] = 0;//表明k节点已被选了(作标记)
+            // 选中一个节点完成连接之后，数组做相应的调整
+            // 更新dist数组，closest数组，以便生成下一个节点
+            for (j = 0; j < n; j++) //遍历所有节点
+            {
+                /* if语句条件的说明：
+                 * （1）k！=j，即跳过自身的节点
+                 * （2）edges[k][j]是指刚被选的节点k到节点j的权重，dist[j]是指之前遍历的所有节点与j节点的最小权重。
+                 *  若edges[k][j] < dist[j],则说明当前刚被选的节点k与节点j之间存在更小的权重，则需要更新
+                 * （3）有人会问：为什么只跳过掉自身的节点（即k==j），而不跳过所有的已选节点？
+                 * 当然我们可以在if语句条件中增加跳过所有的已选节点的条件（dist[j] == 0），
+                 * 而在本程序中我们只跳过了自身的节点？（注意：我们假设图中的边的权值大于0）
+                 * 但其实不是，edges[k][j] < dist[j]条件已包含跳过所有的已选节点，
+                 * 原因是在邻接矩阵中权值为0是最小的，即edges[k][j]>0，而已选节点满足dist[j] == 0，
+                 * 则已选节点j是不满足edges[k][j] < dist[j]，则会被跳过
+                 */
+                if (k != j && edges[k][j] < dist[j]) {
+                    //更新dist数组，closest数组
+                    dist[j] = edges[k][j];//更新权重，使其当前最小
+                    closest[j] = k;//进入到该if语句里，说明刚选的节点k与当前节点j有更小的权重，则closest[j]的被连接节点需作修改为k
+                }
+            }
+        }
+    }
+
+}
+
+
+```
+
+### **javascript**
+
+```javascript
+
+```
+
+<!-- tabs:end -->
+
+### Kruskal算法
+算法描述：
+
+```java
+class Kruskal {
+    
+}
+```
 
 
 

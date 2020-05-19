@@ -1354,7 +1354,7 @@ let curriedAdd3  = curry(add, 1, 2, 3)
 console.log(curriedAdd3());
 ```
 
-这里只是一个简单的curry函数，如果对函数式编程感兴趣的同学，可以移步到[函数式编程](/js/functional-programming/)
+这里只是一个简单的curry函数，在函数式编程那里会更详细的介绍柯里化函数，如果对函数式编程感兴趣的同学，可以移步到[函数式编程](/js/functional-programming/)
 
 ******
 # js中的宽高和位置解析
