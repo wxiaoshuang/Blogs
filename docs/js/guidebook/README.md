@@ -1,5 +1,11 @@
 # js入门教程
 
+# 教程重难点快速指南
+
++ [js创建对象的7种方法](/js/guidebook/#js创建对象的7种方法)
++ [js实现继承的6种方法](/js/guidebook/js实现继承的6种方法)
++ [函数防抖和节流](/js/guidebook/#防抖和节流函数)
+
 # 常见问题
 
 * ```JavaScript```七种内置类型: ```number、string、boolean、undefined、null、object、symbol```(ES6新增加)
@@ -1113,14 +1119,13 @@ f.prototype = proto
 return new f()
 ```
 # Ajax
-# 高级技巧
-## 高级函数
-### 节流与防抖函数
+# 高级函数
+## 防抖和节流函数
 在前端开发的过程中，我们经常会需要绑定一些持续触发的事件，如 resize、scroll、mousemove,  keyup, keydown 等等，但有些时候我们并不希望在事件持续触发的过程中那么频繁地去执行函数。
 
 通常这种情况下我们怎么去解决的呢？一般来讲，防抖和节流是比较好的解决方案
 
-#### 防抖函数
+
 
 ```html
 <div id="box">
@@ -1139,10 +1144,11 @@ return new f()
 div元素绑定了 mousemove 事件，当鼠标在div区域中移动的时候会持续地去触发该事件导致频繁执行函数。效果如下
 ![](./images/GIF.gif)
 
-#### 防抖函数
+### 防抖函数
 防抖的原理就是：你尽管触发事件，但是我一定在事件停止触发n秒后才执行，如果你在一个事件触发的n秒内又触发了这个事件，那我就以新的事件的触发时间为准，n秒后才执行
 
 ```javascript
+// version1
 function debounce(fn,wait){
     let timeId
     return function(){
@@ -1177,6 +1183,7 @@ box.onmousemove = debounce(counter, 1000)
 我不希望非要等到事件停止触发后的n秒才执行，我希望立刻执行函数，然后等到停止触发 n 秒后，再触发才可以重新执行。我们加个 immediate 参数判断是否是立刻执行。
 
 ```javascript
+// version2
 function debounce(fn, wait,immediate ) {
 	   let timeId;
 
@@ -1250,15 +1257,11 @@ function deounce(fn, wait,immediate) {
 }
 ```
 
-
-
-
-
 效果如下
 
 ![debounce3](./images/debounce3.gif)
 
-#### 节流函数 
+### 节流函数 
 
 节流的原理很简单：
 
@@ -1268,11 +1271,171 @@ function deounce(fn, wait,immediate) {
 我们用 leading 代表首次是否执行，trailing 代表结束后是否再执行一次。
 
 关于节流的实现，有两种主流的实现方式，一种是使用时间戳，一种是设置定时器。
-```javascript
 
+时间戳
+
+```javascript
+// version1
+function throttle(fn, wait) {
+    var previous = 0;
+    return function() {
+        var now = Date.now()
+        if(now - previous > wait) {
+            fn.apply(this, arguments)
+            previous = now
+        }
+    }
+}
 ```
 
-### 惰性载入函数
+
+还是用debounce的例子,时间改为2s
+
+```javascript
+box.onmousemove = throttle(counter, 2000)
+```
+效果图如下
+![throttle](./images/throttle.gif)
+可以看到，鼠标移入box,马上执行了一次，从1变成2，然后继续移动，变成了3， 4,大约在6.3s，将鼠标移出去，然后数字不再发生变化
+
+```javascript
+// version2
+function throttle(fn, wait) {
+	var timeId
+    return function() {
+        var context = this;
+        var args = arguments;  
+        if(!timeId) {
+             timeId = setTimeout(() => {
+                  fn.apply(context, args)
+                  timeId = null
+            }, wait)
+        }
+       
+    }
+}
+```
+为了让效果明显，改成3s
+```javascript
+box.onmousemove = throttle(counter, 3000)
+```
+![throttle](./images/throttle1.gif)
+
+
+我们可以看到：当鼠标移入的时候，事件不会立刻执行，晃了 3s 后终于执行了一次，此后每 3s 执行一次，当数字显示为 3 的时候，立刻移出鼠标，相当于大约 9.2s 的时候停止触发，但是依然会在第 12s 的时候执行一次事件。
+
+所以比较两个方法：
+
+1. 第一种事件会立刻执行，第二种事件会在 n 秒后第一次执行
+
+2. 第一种事件停止触发后没有办法再执行事件，第二种事件停止触发后依然会再执行一次事件
+
+   
+
+如果我们想要一个鼠标移入能立刻执行，停止触发的时候还能再执行一次，我们来写个双剑合璧的
+
+```javascript
+//version3
+function throttle(fn, wait) {
+    var timeId, context, args, result;
+    var previous = 0;
+
+    var later = function() {
+        previous = +new Date();
+        timeId = null;
+        fn.apply(context, args)
+    };
+
+    var throttled = function() {
+        var now = +new Date();
+        //下次触发 func 剩余的时间
+        var remaining = wait - (now - previous);
+        context = this;
+        args = arguments;
+         // 如果没有剩余的时间了
+        if (remaining <= 0) {
+            if (timeId) {
+                clearTimeout(timeId);
+                timeId = null;
+            }
+            previous = now;
+            fn.apply(context, args);
+        } else if (!timeId) {
+            timeId = setTimeout(later, remaining);
+        }
+    };
+    return throttled;
+}
+```
+
+
+
+******
+wait设置成3s,演示效果如下
+![](./images/throttle3.gif)
+- **`优化`**
+
+但是我有时也希望无头有尾，或者有头无尾，这个咋办？
+
+那我们设置个 options 作为第三个参数，然后根据传的值判断到底哪种效果，我们约定:
+
+leading：false 表示禁用第一次执行
+trailing: false 表示禁用停止触发的回调
+
+```javascript
+// version4
+function throttle(fn, wait, options) {
+    var timeId, context, args, result;
+    var previous = 0;
+    if (!options) options = {};
+
+    var later = function() {
+        previous = options.leading === false ? 0 : new Date().getTime();
+        timeId = null;
+        fn.apply(context, args);
+        if (!timeId) context = args = null;
+    };
+
+    var throttled = function() {
+        var now = new Date().getTime();
+        if (!previous && options.leading === false) previous = now;
+        var remaining = wait - (now - previous);
+        context = this;
+        args = arguments;
+        if (remaining <= 0 || remaining > wait) {
+            if (timeId) {
+                clearTimeout(timeId);
+                timeId = null;
+            }
+            previous = now;
+            fn.apply(context, args);
+            if (!timeId) context = args = null;
+        } else if (!timeId && options.trailing !== false) {
+            timeId = setTimeout(later, remaining);
+        }
+    };
+    return throttled;
+}
+```
+都开启为true,效果如下
+![throttle4](./images/throttle4.gif)
+
+`options={leading: true, trailing: false}`和version1的效果一样
+`options={leading: false, trailing: true}`和version2的效果一样
+
+-  **`取消功能`**
+```javascript
+// version5
+throttled.cancel = function() {
+    clearTimeout(timeId);
+    previous = 0;
+    timeId = null; 
+}
+```
+
+
+## 惰性载入函数
+
 因为浏览器之间行为的差异，多数JavaScript代码包含了大量的if语句，将执行引导到正确的代码中,比如在浏览器种创建xhr对象
 ```javascript
 function createXHR() {
@@ -1324,11 +1487,25 @@ let createXHR = (function() {
 
 惰性载入函数的优点是只在执行分支代码时牺牲一点儿性能。至于哪种方式更合适，就要看你的具体需求而定了。不过这两种方式都能避免执行不必要的代码。
 
-
-
 ******
-## 函数绑定
-******
+## 函数记忆
+
+函数记忆是指将上次的计算结果缓存起来，当下次调用时，如果遇到相同的参数，就直接返回缓存中的数据。
+
+```javascript
+function add(a, b) {
+    return a + b;
+}
+
+// 假设 memoize 可以实现函数记忆
+var memoizedAdd = memoize(add);
+
+memoizedAdd(1, 2) // 3
+memoizedAdd(1, 2) // 相同的参数，第二次调用时，从缓存中取出数据，而非重新计算一次
+```
+
+要实现一个记忆函数非常简单，理论上，只用把参数和对应的结果数据存到一个对象中，调用时，判断参数对应的数据是否存在，存在就返回对应的结果数据。
+
 ## 函数柯里化
 
 ```javascript
@@ -1354,7 +1531,7 @@ let curriedAdd3  = curry(add, 1, 2, 3)
 console.log(curriedAdd3());
 ```
 
-这里只是一个简单的curry函数，在函数式编程那里会更详细的介绍柯里化函数，如果对函数式编程感兴趣的同学，可以移步到[函数式编程](/js/functional-programming/)
+这里只是一个简单的curry函数，在函数式编程那里会更详细的介绍更高级的柯里化函数，如果对函数式编程感兴趣的同学，可以移步到[函数式编程](/js/functional-programming/)
 
 ******
 # js中的宽高和位置解析
