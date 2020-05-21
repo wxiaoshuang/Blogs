@@ -627,9 +627,228 @@ class Node {
 
 1. 双链表
 
-## [4 栈 队列](/dataStructure-and-algorithm/栈-队列/栈-队列.md)
+## 栈 队列 
 
-## 5 哈希表 映射 集合
+### 栈
+
+栈是一个先入后出的有序列表，允许插入和删除的一端成为栈顶，另一端成为栈底
+
+![image-20200317151119857](./images/image-20200317151119857.png)
+
+#### 用数组模拟栈
+
+```java
+public class ArrayStack {
+    private int maxSize;
+    private int[] data;
+    private int top;
+    public ArrayStack(int maxSize) {
+        this.maxSize = maxSize;
+        data = new int[maxSize];
+        top = -1;
+    }
+    public boolean isEmpty() {
+        return top == -1;
+    }
+    public boolean isFull() {
+        return top == maxSize - 1;
+    }
+    // 入栈
+    public void push(int val) {
+        if(isFull()) {
+            return;
+        }
+        top++;
+        data[top] = val;
+    }
+    // 出栈
+    public int pop() {
+        if(isEmpty()) {
+            throw new RuntimeException("栈为空");
+        }
+        int temp = data[top];
+        top--;
+        return temp;
+    }
+    public void show() {
+        if(isEmpty()) {
+           return;
+        }
+        // 从栈顶开始遍历
+        for (int i = top; i >= 0; i--) {
+            System.out.println(data[i]);
+        }
+    }
+}
+```
+
+#### 用栈实现综合计算器
+
+使用栈，计算一个表达式的值`3 + 4 * 8 - 2`
+
+### 队列
+
+队列： 队列是一个有序列表，可以用数组或者链表来实现，遵循先入先出的原则
+
+栈，队列，双端队列
+
+优先队列：插入o(1), 取o(logn)底层实现，可以是heap，bst, treap
+
+#### 用数组模拟队列
+
+![image-20200316143240005](./images/image-20200316143240005.png)
+
+```java
+public class ArrayQueue {
+    private int front; // 指向队列的第一个元素的前一个位置
+    private int rear; // 队列的最后一个元素的位置
+    private int maxSize;
+    private int[] arr;
+    public ArrayQueue(int maxSize) {
+        this.maxSize = maxSize;
+        arr = new int[maxSize];
+        front = -1;
+        rear = -1;
+    }
+    public boolean isFull() {
+        return rear == maxSize - 1;
+    }
+    public boolean isEmpty() {
+        return front == rear;
+    }
+    // 入队
+    public void enQueue(int val) {
+        if(isFull()) {
+            return;
+        }
+        rear++;
+        arr[rear] = val;
+    }
+    // 出队
+    public int deQueue() {
+        if(isEmpty()) {
+            throw new RuntimeException("队列为空");
+        }
+        front++;
+        return arr[front];
+    }
+    // 查看队列的头部
+    public int peek() {
+        if(isEmpty()) {
+            throw new RuntimeException("队列为空");
+        }
+        return arr[front+1];
+    }
+    public void showQueue() {
+        if(isEmpty()) {
+            System.out.println("the queue is empty");
+        }
+        for (int i = 0; i < arr.length; i++) {
+            System.out.println(arr[i]+"\t");
+        }
+        System.out.println();
+    }
+}
+
+```
+
+但是这种实现方式有一个很大的问题，front前面的空间几十已经空出来，却无法再使用了，我们需要用数组来实现环形队列
+
+1. front表示第一个元素的索引，rear表示最后一个元素的下一个索引
+2. 对列为空的条件` front == rear`,  队列满的条件，`(rear + 1) % maxSize == front`
+3. 队列的大小`(rear +maxSize - front) % maxSize`
+
+```java
+public class ArrayQueue2 {
+    private int front; // 指向队列的第一个元素的个位置
+    private int rear; // 队列的最后一个元素的后一个位置
+    private int maxSize;
+    private int[] arr;
+    public ArrayQueue2(int maxSize) {
+        this.maxSize = maxSize;
+        arr = new int[maxSize];
+        front = 0;
+        rear = 0;
+    }
+    public boolean isFull() {
+        return (rear + 1) % maxSize == front;
+    }
+    public boolean isEmpty() {
+        return rear == front;
+    }
+    // 入队
+    public void enQueue(int val) {
+        if (isFull()) {
+            return;
+        }
+        arr[rear] = val;
+        // 更新rear
+        rear = (rear + 1) % maxSize;
+    }
+    // 出队
+    public int deQueue() {
+        if (isEmpty()) {
+            throw new RuntimeException("队列为空");
+        }
+        int temp = arr[front];
+        // 更新front
+        front = (front + 1) % maxSize;
+        return temp;
+    }
+    // 查看队列的头部
+    public int peek() {
+        if (isEmpty()) {
+            throw new RuntimeException("队列为空");
+        }
+        return arr[front];
+    }
+    public void showQueue() {
+        if (isEmpty()) {
+            System.out.println("the queue is empty");
+        }
+        for (int i = front; i < front + size(); i++) {
+            System.out.printf("arr[%d]=%d\n", i % maxSize, arr[i % maxSize]);
+        }
+        System.out.println();
+    }
+    public int size() {
+        return (rear + maxSize - front) % maxSize;
+    }
+}
+```
+
+### leetCode
+
+- https://leetcode-cn.com/problems/valid-parentheses/
+- https://leetcode-cn.com/problems/min-stack/
+- https://leetcode-cn.com/problems/largest-rectangle-in-histogram
+- https://leetcode-cn.com/problems/sliding-window-maximum
+- https://leetcode.com/problems/design-circular-deque
+- https://leetcode.com/problems/trapping-rain-water/
+
+### leetCode题目解析
+
+[239 滑动窗口最大值](https://leetcode-cn.com/problems/sliding-window-maximum/)
+
+>给定一个数组 nums，有一个大小为 k 的滑动窗口从数组的最左侧移动到数组的最右侧。你只可以看到在滑动窗口内的 k 个数字。滑动窗口每次只向右移动一位。返回滑动窗口中的最大值。
+
+```markdown
+输入: nums = [1,3,-1,-3,5,3,6,7], 和 k = 3
+输出: [3,3,5,5,6,7] 
+解释: 
+
+  滑动窗口的位置                最大值
+---------------               -----
+[1  3  -1] -3  5  3  6  7       3
+ 1 [3  -1  -3] 5  3  6  7       3
+ 1  3 [-1  -3  5] 3  6  7       5
+ 1  3  -1 [-3  5  3] 6  7       5
+ 1  3  -1  -3 [5  3  6] 7       6
+ 1  3  -1  -3  5 [3  6  7]      7
+```
+
+
+## 哈希表 映射 集合
 
 哈希表: 查询，添加，删除 o(1)
 
@@ -639,7 +858,7 @@ class Node {
 - https://leetcode-cn.com/problems/group-anagrams/
 - https://leetcode-cn.com/problems/two-sum/description/
 
-## 6 树 二叉树 二叉搜索树
+## 树 二叉树 二叉搜索树
 
 ### 二叉搜索树
 
@@ -649,7 +868,7 @@ class Node {
 
 用代码实现BST的构造，插入，删除，查询，前，中，后遍历
 
-## 7 分治 递归 回溯
+## 分治 递归 回溯
 
 八皇后，数独
 
@@ -691,17 +910,17 @@ class Node {
 >输入: candidates = [2,3,6,7], target = 7,
 >所求解集为:
 >[
->  [7],
->  [2,2,3]
+>[7],
+>[2,2,3]
 >]
 >示例 2:
 >
 >输入: candidates = [2,3,5], target = 8,
 >所求解集为:
 >[
->  [2,2,2,2],
->  [2,3,3],
->  [3,5]
+>[2,2,2,2],
+>[2,3,3],
+>[3,5]
 >]
 
 第一种方法，做减法
@@ -758,6 +977,7 @@ class Solution {
         }
     }
 }
+
 ```
 
 #### [78. 子集](https://leetcode-cn.com/problems/subsets/)
@@ -815,7 +1035,7 @@ class Solution {
 
 
 
-## 8 广度优先搜索 深度优先搜索
+## 广度优先搜索 深度优先搜索
 
 dfs:
 
@@ -832,6 +1052,24 @@ bfs:用队列来实现
 题目：
 
 ## 图论
+
+
+
+## 贪心算法
+
+>贪心算法（又称贪婪算法）是指，在对问题求解时，总是做出在当前看来是最好的选择。也就是说，不从整体最优上加以考虑，他所做出的是在某种意义上的局部最优解。
+>贪心算法不是对所有问题都能得到整体最优解，关键是贪心策略的选择，选择的贪心策略必须具备无后效性，即某个状态以前的过程不会影响以后的状态，只与当前状态有关。 -百度百科
+
+应用： 最小生成树，霍夫曼编码
+硬币问题： 必须是倍数关系
+
+### leetCode
+
+- https://leetcode-cn.com/problems/lemonade-change/description/
+- https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-ii/description/
+- https://leetcode-cn.com/problems/assign-cookies/description/
+- https://leetcode-cn.com/problems/walking-robot-simulation/description/
+- [https://leetcode-cn.com/problems/jump-game/ ](https://leetcode-cn.com/problems/jump-game/)、[ https://leetcode-cn.com/problems/jump-game-ii/](
 
 ## 最小生成树
 
@@ -854,160 +1092,6 @@ bfs:用队列来实现
 <3> 不能使用产生回路的边。 
 
 构造最小生成树的算法主要有：克鲁斯卡尔（Kruskal）算法和普利姆（Prim）算法, 他们都遵循以上准则。
-
-### Prim算法
-
-算法描述
-
-1).输入：一个加权连通图，其中顶点集合为V，边集合为E；
-
-2).初始化：Vnew = {x}，其中x为集合V中的任一节点（起始点），Enew = {},为空；
-
-3).重复下列操作，直到Vnew = V：
-
-a.在集合E中选取权值最小的边<u, v>，其中u为集合Vnew中的元素，而v不在Vnew[集合](https://baike.baidu.com/item/集合/2908132)当中，并且v∈V（如果存在有多条满足前述条件即具有相同权值的边，则可任意选取其中之一）；
-
-b.将v加入集合Vnew中，将<u, v>边加入集合Enew中；
-
-4).输出：使用集合Vnew和Enew来描述所得到的[最小生成树](https://baike.baidu.com/item/最小生成树)
-
-算法分析
-
-![prim](./images/prim.jpg)
-
-算法代码
-
-<!-- tabs:start -->
-
-### ****java****
-
-```java
-package lesson;
-
-import java.util.Arrays;
-
-// prim算法
-public class Prim {
-    private static final int INF = Integer.MAX_VALUE;
-
-    public static void main(String[] args) {
-        int[] data = new int[]{0,1,2,3,4,5,6};// 7个顶点
-        // 二维数组表示邻接矩阵，用来描述顶点相连的边的权重
-        int[][] edges = new int[][]{
-                {INF, 5, 7, INF, INF, INF, 2},
-                {5, INF, INF, 9, INF, INF, 3},
-                {7, INF, INF, INF, 8, INF, INF},
-                {INF, 9, INF, INF, INF, 4, INF},
-                {INF, INF, 8, INF, INF, 5, 4},
-                {INF, INF, INF, 4, 5, INF, 6},
-                {2, 3, INF, INF, 4, 6, INF}
-        };
-        prim(data, edges, 0);// 从第二个顶点开始
-        System.out.println();
-        prim2(data, edges,0);
-    }
-
-    /**
-     * 时间复杂度O(n^3)
-     * @param data   存放顶点数据
-     * @param edges  邻接矩阵存储边的权重
-     * @param s      算法开始顶点
-     */
-    public static void prim(int[] data, int[][] edges, int s) {
-        int n = data.length;
-        int[] visited = new int[n];
-        visited[s] = 1;
-        // 用h1和h2记录两个顶点的下标
-        int h1 = -1;
-        int h2 = -1;
-        int minWeight = INF;
-        for (int k = 1; k < n; k++) {
-            // 确定这次生成的子图和哪个顶点的距离最近
-            for (int i = 0; i < n; i++) { // i表示被访问过的节点
-                for (int j = 0; j < n; j++) { // j表示未被访问过的节点
-                    if (visited[i] == 1 && visited[j] == 0 && edges[i][j] < minWeight) {
-                        minWeight = edges[i][j];
-                        h1 = i;
-                        h2 = j;
-                    }
-                }
-            }
-            System.out.println("边<" + data[h1] + "," + data[h2] + "> 权值:" + edges[h1][h2]);
-            visited[h2] = 1;
-            minWeight = INF;
-        }
-    }
-    // 时间复杂度O(n^2)
-    public static void prim2(int[] data, int[][] edges, int s)//普利姆算法（参数：邻接矩阵，起点（即第一个生成的点，可随便取））
-    {
-        int n = data.length;
-        int[] dist = new int[n];
-        int[] closest = new int[n];
-        int i, min, j, k;
-
-        //初始化closest数组，dist数组
-        for (i = 0; i < n; i++)//赋初值，即将closest数组都赋为节点s，dist数组赋为节点s到各节点的权重
-        {
-            closest[i] = s;
-            dist[i] = edges[s][i];// edges[s][i]的值指的是节点s到i节点的权重
-        }
-        dist[s] = 0; // 自己到自己的距离初始化为0，标记初始节点为已选节点
-
-        // 开始生成其他的节点
-        for (i = 1; i < n; i++) //接下来找剩下的v-1个节点
-        {
-            k = i;
-            // 找到一个节点，该节点到已选节点中的某一个节点的权值是当前最小的
-            min = INF;//INF表示正无穷（每查找一个节点，min都会重新更新为INF，以便获取当前最小权重的节点）
-            for (j = 0; j < n; j++)//遍历所有节点
-            {
-                if (dist[j] != 0 && dist[j] < min)//若该节点还未被选且权值小于之前遍历所得到的最小值
-                {
-                    min = dist[j];//更新min的值
-                    k = j;//记录当前最小权重的节点的编号
-                }
-            }
-
-            //输出被连接节点与连接节点，以及它们的权值
-            System.out.printf("边(%d,%d)权为:%d\n", closest[k], k, min);
-
-            dist[k] = 0;//表明k节点已被选了(作标记)
-            // 选中一个节点完成连接之后，数组做相应的调整
-            // 更新dist数组，closest数组，以便生成下一个节点
-            for (j = 0; j < n; j++) //遍历所有节点
-            {
-                /* if语句条件的说明：
-                 * （1）k！=j，即跳过自身的节点
-                 * （2）edges[k][j]是指刚被选的节点k到节点j的权重，dist[j]是指之前遍历的所有节点与j节点的最小权重。
-                 *  若edges[k][j] < dist[j],则说明当前刚被选的节点k与节点j之间存在更小的权重，则需要更新
-                 * （3）有人会问：为什么只跳过掉自身的节点（即k==j），而不跳过所有的已选节点？
-                 * 当然我们可以在if语句条件中增加跳过所有的已选节点的条件（dist[j] == 0），
-                 * 而在本程序中我们只跳过了自身的节点？（注意：我们假设图中的边的权值大于0）
-                 * 但其实不是，edges[k][j] < dist[j]条件已包含跳过所有的已选节点，
-                 * 原因是在邻接矩阵中权值为0是最小的，即edges[k][j]>0，而已选节点满足dist[j] == 0，
-                 * 则已选节点j是不满足edges[k][j] < dist[j]，则会被跳过
-                 */
-                if (k != j && edges[k][j] < dist[j]) {
-                    //更新dist数组，closest数组
-                    dist[j] = edges[k][j];//更新权重，使其当前最小
-                    closest[j] = k;//进入到该if语句里，说明刚选的节点k与当前节点j有更小的权重，则closest[j]的被连接节点需作修改为k
-                }
-            }
-        }
-    }
-
-}
-
-
-```
-
-### **javascript**
-
-```javascript
-
-```
-
-<!-- tabs:end -->
 
 ### Kruskal算法
 算法描述：
@@ -1154,18 +1238,734 @@ public class Kruskal {
 }
 ```
 
+### Prim算法
+
+算法描述
+
+1).输入：一个加权连通图，其中顶点集合为V，边集合为E；
+
+2).初始化：Vnew = {x}，其中x为集合V中的任一节点（起始点），Enew = {},为空；
+
+3).重复下列操作，直到Vnew = V：
+
+a.在集合E中选取权值最小的边<u, v>，其中u为集合Vnew中的元素，而v不在Vnew[集合](https://baike.baidu.com/item/集合/2908132)当中，并且v∈V（如果存在有多条满足前述条件即具有相同权值的边，则可任意选取其中之一）；
+
+b.将v加入集合Vnew中，将<u, v>边加入集合Enew中；
+
+4).输出：使用集合Vnew和Enew来描述所得到的[最小生成树](https://baike.baidu.com/item/最小生成树)
+
+算法步骤
+
+***Algorithm\***
+**1)** 创建一个集合*mstSet* 用来跟踪MST中的所有顶点
+**2)** 图的每个顶点的距离初始成正无穷. 第一个顶点距离初始为0以便第一个选中， dist={0,INF,INF,INF.....}
+**3)** 当*mstSet*不包含图中所有的顶点时，重复下面的步骤
+….**a)** 在不在*mstSet*集合的顶点中，选中一个顶点距离最小的顶点u
+….**b)** 将u加入到 mstSet.
+….**c)** 更新u相邻顶点的距离. 对于每一个相邻的顶点 *v*,如果 *u-v* 边的权重小于dist[v], dist[v]更新成weight(u, v)
+
+算法图解
+
+用下面的例子来说明算法步骤:
+[![Fig-1](https://www.geeksforgeeks.org/wp-content/uploads/Fig-11.jpg)](https://www.geeksforgeeks.org/wp-content/uploads/Fig-11.jpg)
+
+*mstSet* 集合初始化为空，距离dist初始化为 {0, INF, INF, INF, INF, INF, INF, INF} . INF 表示无穷. 现在我们选出距离最小的顶点, 顶点0 被选中，将顶点0加入到*mstSet*.所以*mstSet*变成 {0}. 当0加入到*mstSet*之后，更新它相邻节点的距离. 相邻节点是1和7,1 和7的距离被更新为4和8. 下面的子图显示了顶点和他们的距离值, 仅仅显示有限距离的顶点， 在MST中的顶点用绿色标记
+
+[![Fig-2](https://www.geeksforgeeks.org/wp-content/uploads/MST1.jpg)](https://www.geeksforgeeks.org/wp-content/uploads/MST1.jpg)
 
 
-## 最短路径
 
-有权图（有向或者无向），试用于路径规划
+选出不在MST中距离最小的顶点 ，顶点1被选中并且加入到*mstSet*. 所以*mstSet*现在变成了 {0, 1}. 更新顶点1的相邻顶点的距离. 顶点2的距离变成了8.
 
-dijkstra算法
-
-时间复杂度O(Elog(V)),不可以有负权重
+[![Fig-3](https://www.geeksforgeeks.org/wp-content/uploads/MST2.jpg)](https://www.geeksforgeeks.org/wp-content/uploads/MST2.jpg)
 
 
-## 9 二分查找
+
+选出不在MST中距离最小的顶点 ，顶点7被选中并且加入到*mstSet*. 所以 *mstSet*现在变成了{0, 1, 7}. 更新顶点7的相邻顶点距离. 顶点6和顶点 8 的距离分别变成了1和7.
+[![Fig-4](https://www.geeksforgeeks.org/wp-content/uploads/MST3.jpg)](https://www.geeksforgeeks.org/wp-content/uploads/MST3.jpg)
+
+选出不在MST中距离最小的顶点 ，顶点6被选中. 所以  *mstSet*现在变成了{0, 1, 7 ,6}. 更新顶点6的相邻顶点的距离. 顶点5和顶点8放入距离被更新了
+
+
+
+[![Fig-4](https://www.geeksforgeeks.org/wp-content/uploads/MST4.jpg)](https://www.geeksforgeeks.org/wp-content/uploads/MST4.jpg)
+
+重复上面的步骤直到 *mstSet* 包含图中所有的顶点. 最终，我们得到了下面的生成树
+
+
+
+[![Fig-1](https://www.geeksforgeeks.org/wp-content/uploads/MST5.jpg)](https://www.geeksforgeeks.org/wp-content/uploads/MST5.jpg)
+
+
+
+算法代码
+
+<!-- tabs:start -->
+
+### ****java****
+
+```java
+import java.util.Arrays;
+
+// prim算法
+public class Prim {
+    private static final int INF = Integer.MAX_VALUE;
+    private int V;
+    private int[][] graph;
+    public static void main(String[] args) {
+        // 二维数组表示邻接矩阵，用来描述顶点相连的边的权重
+        int[][] edges = new int[][]{
+                {INF, 5, 7, INF, INF, INF, 2},
+                {5, INF, INF, 9, INF, INF, 3},
+                {7, INF, INF, INF, 8, INF, INF},
+                {INF, 9, INF, INF, INF, 4, INF},
+                {INF, INF, 8, INF, INF, 5, 4},
+                {INF, INF, INF, 4, 5, INF, 6},
+                {2, 3, INF, INF, 4, 6, INF}
+        };
+        Prim p = new Prim(edges);
+        p.prim();
+    }
+    public Prim(int[][] graph) {
+        V = graph.length;
+        this.graph = graph;
+    }
+    public void prim() {
+        int[] dist = new int[V];
+        int parent[] = new int[V];
+        Arrays.fill(parent, -1);
+        boolean[] mstSet = new boolean[V];
+        for (int i = 0; i < V; i++) {
+            dist[i] = INF;
+            mstSet[i] = false;
+        }
+        dist[0] = 0;//将第一个顶点距离初始化为0，所以会被第一个选中到MST中
+        parent[0] = -1; // 第一个顶点是MST的根节点
+        // MST有 V个顶点
+        for (int i = 0; i < V - 1; i++) {
+            // 从非MST的顶点中挑选出距离最小的点
+            int u = minDistance(dist,mstSet);
+            // 将顶点u加入MST
+            mstSet[u] = true;
+            // 更新u相邻顶点的dist
+            for (int v = 0; v < V; v++) {
+                // 更新dist[v]的三个必须条件:
+                // v不在 MST中
+                // v和u相邻
+                // graph[u][v] < dist[v]
+                if(!mstSet[v] && graph[u][v] > 0 && graph[u][v] < dist[v]) {
+                    dist[v] = graph[u][v];
+                    parent[v] = u;
+                }
+            }
+        }
+        printMST(parent);
+
+    }
+    private int minDistance(int[] dist, boolean[] mstSet) {
+        int minDis = INF, minIndex = -1;
+        for (int i = 0; i < V; i++) {
+            if(!mstSet[i] && dist[i] < minDis) {
+                minDis = dist[i];
+                minIndex = i;
+            }
+        }
+        return minIndex;
+    }
+    private void printMST(int[] parent)
+    {
+        System.out.println("Edge \tWeight");
+        for (int i = 1; i < V; i++)
+            System.out.println(parent[i] + " - " + i + "\t" + graph[i][parent[i]]);
+    }
+
+
+}
+
+```
+
+### **javascript**
+
+```javascript
+function Prim() {
+    this.prim = function() {
+        
+    }
+}
+```
+
+<!-- tabs:end -->
+
+## 单源最短路径
+
+>给定一个带权有向图G=（V,E），其中每条边的权是一个实数。另外，还给定V中的一个顶点，称为源。要计算从源到其他所有各顶点的最短路径长度。这里的长度就是指路上各边权之和。这个问题通常称为单源最短路径问题。
+
+### Dijkstra算法
+
+算法过程
+
+> 给一个图和一个起始顶点（源点），找到这个顶点到图中所有顶点的最短路径
+>
+> Dijkstra算法和求最小生成树的Prim算法非常相似，类比Prim的MST,我们创建一个SPT(shorted path tree), 将给定的起点作为根节点，维护两个集合，一个集合(T)包括最短路径树的顶点，另外一个集合(U)不包括最短路径树的顶点，在算法的每一步，我们在U中找到一个距离源点路径最短的顶点
+>
+> 下面是Dijkstra算法用来求单源最短路径的详细步骤
+>
+> 1）创建一个*sptSet* 集合，用来追踪在最短路径树中的顶点，集合初始化为空
+>
+> 2）将所有顶点到源点的距离初始化为正无穷，源点的距离初始化为0，用dist数组来存储这些距离
+>
+> 03）只要*sptSet*不包含所有的顶点，就循环下面的步骤
+>
+> a) 从不在*sptSet*集合中的顶点中选出距离最小的顶点u
+>
+> b) 将u添加进去*sptSet*
+>
+> c) 更新u所有相邻顶点的距离，也就是迭代u的所有的相邻零点，对于每个迭代的顶点v来说，如果v不在*sptSet*集合中并且dist(u) +weight(u,v) < dist(v),  那就更新dist[v]为dist(u) +weight(u,v) 
+
+算法图解
+
+用下面的例子来说明:
+[![Fig-1](https://www.geeksforgeeks.org/wp-content/uploads/Fig-11.jpg)](https://www.geeksforgeeks.org/wp-content/uploads/Fig-11.jpg)
+
+*sptSet* 初始化为空 ，dist初始化为 {0, INF, INF, INF, INF, INF, INF, INF}  INF 表示无穷. 现在我们选出距离最小的顶点, 顶点0 被选中，并加入到 *sptSet*.所以*sptSet* 变成 {0}. 当0加入到*sptSet*之后，更新它相邻节点的距离，相邻节点是1和7，,1 和7的距离被更新为4和8. 下面的子图显示了顶点和他们的距离值, 仅仅显示有限距离的顶点， 在SPT中的顶点用绿色标记
+
+[![Fig-2](https://www.geeksforgeeks.org/wp-content/uploads/MST1.jpg)](https://www.geeksforgeeks.org/wp-content/uploads/MST1.jpg)
+
+选出不在SPT中距离最小的顶点 ，顶点1被选中并且加入到sptSet. 所以 sptSet现在变成了 {0, 1}. 更新顶点1的相邻顶点距离. 顶点2的距离变成了12.
+
+[![Fig-3](https://www.geeksforgeeks.org/wp-content/uploads/DIJ2.jpg)](https://www.geeksforgeeks.org/wp-content/uploads/DIJ2.jpg)
+
+选出不在SPT中距离最小的顶点 ，顶点7被选中并且加入到sptSet. 所以 sptSet现在变成了{0, 1, 7}. 更新顶点7的相邻顶点距离. 顶点6和顶点 8 的距离分别变成了9和15.
+[![Fig-4](https://www.geeksforgeeks.org/wp-content/uploads/DIJ3.jpg)](https://www.geeksforgeeks.org/wp-content/uploads/DIJ3.jpg)
+
+选出不在SPT中距离最小的顶点 ，顶点7被选中. 所以 sptSet现在变成了{0, 1, 7 ，6}. 更新顶点7的相邻顶点的距离. 顶点5和顶点8放入距离被更新了
+
+[![Fig-4](https://www.geeksforgeeks.org/wp-content/uploads/DIJ4.jpg)](https://www.geeksforgeeks.org/wp-content/uploads/DIJ4.jpg)
+
+重复上面的步骤直到l *sptSet* 包含图中所有的顶点. 最终，我们得到了下面的最短路径树(SPT).
+
+[![Fig-1](https://www.geeksforgeeks.org/wp-content/uploads/DIJ5.jpg)](https://www.geeksforgeeks.org/wp-content/uploads/DIJ5.jpg)
+
+```java
+//version1
+
+import java.util.List;
+import java.util.Arrays;
+
+// Dijkstra算法
+public class Dijkstra {
+    private int[][] graph;
+    private int src;
+    private int V;
+    private static final int INF = Integer.MAX_VALUE;
+    public static void main(String[] args) {
+        int[][] edges = new int[][]{
+                {INF, 5, 7, INF, INF, INF, 2},
+                {5, INF, INF, 9, INF, INF, 3},
+                {7, INF, INF, INF, 8, INF, INF},
+                {INF, 9, INF, INF, INF, 4, INF},
+                {INF, INF, 8, INF, INF, 5, 4},
+                {INF, INF, INF, 4, 5, INF, 6},
+                {2, 3, INF, INF, 4, 6, INF}
+        };
+        Dijkstra d = new Dijkstra(edges,0);
+        int[] dist = d.dijkstra();
+    }
+    public Dijkstra(int[][] graph, int src) {
+        this.graph = graph;
+        this.V = graph.length;
+        this.src = src;
+    }
+    public int[] dijkstra() {
+        int[] path = new int[V];
+        int[] dist = new int[V];
+        boolean[] sptSet = new boolean[V];
+        // 距离初始化为正无穷，sptSet全部初始化为false,表示最小生成树种还未添加人任何顶点
+        for (int i = 0; i < V; i++) {
+            dist[i] = INF;
+            sptSet[i] = false;
+        }
+        // 源点距离自身的距离总是为0
+        dist[src] = 0;
+        // 这里只循环V-1次即可，因为最后一个顶点是不会走里面的for(int v; v<V；v++)的
+        for(int i = 0; i < V - 1;i++) {
+            // 从未处理的顶点集合种选出距离最小的边
+            // 在首轮循环种，u总是等于源点src
+            int u = minDistance(dist,sptSet);
+            if (u == -1) break;
+            // 标记选中顶点为已经处理过了
+            sptSet[u] = true;
+            // 更新选中顶点相邻顶点的dist
+            for(int v = 0; v < V; v++) {
+                // 更新dist[v] ，仅当下面三个条件同时满足
+                //  v不在 sptSet种,
+                //  u , v之间存在边,
+                //  从源点到u再到v之间的距离小于从源点到v的距离
+                if(!sptSet[v] && graph[u][v] != INF && dist[u] + graph[u][v]< dist[v]) {
+                    dist[v] = dist[u] + graph[u][v];
+                }
+            }
+
+        }
+        printSolution(dist);
+        return dist;
+    }
+    private int minDistance(int[] dist, boolean[] sptSet) {
+        int minDis = Integer.MAX_VALUE, minIndex = -1;
+        for (int v = 0; v < V; v++)
+            if (!sptSet[v] && dist[v] <= minDis) {
+                minDis = dist[v];
+                minIndex = v;
+            }
+
+        return minIndex;
+    }
+    private void printSolution(int dist[])
+    {
+        System.out.println("Vertex \t\t Distance from Source");
+        for (int i = 0; i < dist.length; i++)
+            System.out.println(i + " \t\t " + dist[i]);
+    }
+}
+
+```
+
+打印即如果
+
+```
+Vertex 		 Distance from Source
+0 		 0
+1 		 5
+2 		 7
+3 		 12
+4 		 6
+5 		 8
+6 		 2
+```
+
+
+
+Noted:
+
+1. 上面代码计算出了从源点到各个顶点的最短距离，但是没有计算出从源点到某个顶点的路径
+
+2. 代码考虑的是无向图，也适用于有向图
+3. 代码计算出了源点到各个顶点的最短距离,如果我们只关心源点到一个顶点的最短距离，我们可以在选出的最小距离顶点等于目标顶点的时候终止循环
+4. 算法时间复杂度是O(V^2), 如果输入的图示用邻接表表示的话，那么在二叉堆的帮助下，时间复杂度可以降低到 O(E log V)，有兴趣的童鞋移步https://www.geeksforgeeks.org/dijkstras-algorithm-for-adjacency-list-representation-greedy-algo-8/
+5. Dijkstra算法不适用于负权边
+
+我们把代码改造一下, 支持求出路径,其实非常简单，我们用一个数组parent来记录，每次更新dist的时候记录当前节点的父节点即可
+
+```java
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Arrays;
+
+// Dijkstra算法
+public class Dijkstra {
+    private int[][] graph;
+    private int src;
+    private int V;
+    private int[] parent;
+    private static final int INF = Integer.MAX_VALUE;
+    public static void main(String[] args) {
+        int[][] edges = new int[][]{
+                {INF, 5, 7, INF, INF, INF, 2},
+                {5, INF, INF, 9, INF, INF, 3},
+                {7, INF, INF, INF, 8, INF, INF},
+                {INF, 9, INF, INF, INF, 4, INF},
+                {INF, INF, 8, INF, INF, 5, 4},
+                {INF, INF, INF, 4, 5, INF, 6},
+                {2, 3, INF, INF, 4, 6, INF}
+        };
+        Dijkstra d = new Dijkstra(edges,0);
+        int[] dist = d.dijkstra();
+        d.printPath();
+    }
+    public Dijkstra(int[][] graph, int src) {
+        this.graph = graph;
+        this.V = graph.length;
+        this.src = src;
+    }
+    public int[] dijkstra() {
+        int[] path = new int[V];
+        int[] dist = new int[V];
+        parent = new int[V];
+        Arrays.fill(parent, -1);
+        boolean[] sptSet = new boolean[V];
+        // 距离初始化为正无穷，sptSet全部初始化为false,表示最小生成树种还未添加人任何顶点
+        for (int i = 0; i < V; i++) {
+            dist[i] = INF;
+            sptSet[i] = false;
+        }
+        // 源点距离自身的距离总是为0
+        dist[src] = 0;
+        parent[src] = src;
+        for(int i = 0; i < V;i++) {
+            // 从未处理的顶点集合种选出距离最小的边
+            // 在首轮循环种，u总是等于源点src
+            int u = minDistance(dist,sptSet);
+            // 标记选中顶点为已经处理过了
+            sptSet[u] = true;
+            // 更新选中顶点相邻顶点的dist
+            for(int v = 0; v < V; v++) {
+                // 更新dist[v] ，仅当下面三个条件同时满足
+                //  v不在 sptSet种,
+                //  u , v之间存在边,
+                //  从源点到u再到v之间的距离小于从源点到v的距离
+                if(!sptSet[v] && graph[u][v] != INF && dist[u] + graph[u][v]< dist[v]) {
+                    dist[v] = dist[u] + graph[u][v];
+                    parent[v] = u;
+                }
+            }
+
+        }
+        printSolution(dist);
+        return dist;
+    }
+    private int minDistance(int[] dist, boolean[] sptSet) {
+        int minDis = Integer.MAX_VALUE, minIndex = -1;
+        for (int v = 0; v < V; v++)
+            if (!sptSet[v] && dist[v] <= minDis) {
+                minDis = dist[v];
+                minIndex = v;
+            }
+
+        return minIndex;
+    }
+    public void printPath(){
+        System.out.println("Vertex \t\t Path from Source");
+        for(int i = 0; i < V; i++) {
+            System.out.println(i+"\t\t"+singlePath(i));
+        }
+    }
+    public List<Integer> singlePath(int target) {
+        List<Integer> path = new ArrayList<>();
+        int curr = target;
+        while(curr!= src) {
+            path.add(curr);
+            curr = parent[curr];
+        }
+        path.add(src);
+        Collections.reverse(path);
+        return path;
+    }
+    private void printSolution(int dist[])
+    {
+        System.out.println("Vertex \t\t Distance from Source");
+        for (int i = 0; i < dist.length; i++)
+            System.out.println(i + " \t\t " + dist[i]);
+    }
+}
+
+```
+
+优化，用优先队列来找每轮未访问顶点的dist最小的顶点
+
+```java
+// version2
+import java.util.List;
+import java.util.Arrays;
+import java.util.PriorityQueue;
+
+// Dijkstra算法
+public class Dijkstra2 {
+    private int[] data;
+    private int[][] matrix;
+    private int s;
+    private int[] dist;
+    private class Node implements Comparable<Node> {
+        public int w, dist;
+        public Node(int w, int dist) {
+            this.w = w;
+            this.dist = dist;
+        }
+        @Override
+        public int compareTo(Node another) {
+            return dist - another.dist;
+        }
+    }
+    private boolean[] visited;
+    private static final int INF = Integer.MAX_VALUE;
+    public static void main(String[] args) {
+        int[] data = new int[]{0,1,2,3,4,5,6};// 7个顶点
+        int[][] matrix = new int[][]{
+                {INF, 5, 7, INF, INF, INF, 2},
+                {5, INF, INF, 9, INF, INF, 3},
+                {7, INF, INF, INF, 8, INF, INF},
+                {INF, 9, INF, INF, INF, 4, INF},
+                {INF, INF, 8, INF, INF, 5, 4},
+                {INF, INF, INF, 4, 5, INF, 6},
+                {2, 3, INF, INF, 4, 6, INF}
+        };
+        Dijkstra2 d = new Dijkstra2(data, matrix, 0);
+        System.out.println(d.dictTo(1));
+        System.out.println(d.dictTo(2));
+        System.out.println(d.dictTo(3));
+        System.out.println(d.dictTo(4));
+        System.out.println(d.dictTo(5));
+    }
+    public int dictTo(int w) {
+        if(w >=0 && w < data.length) {
+            return dist[w];
+        }
+        throw new IllegalArgumentException("illegal index");
+    }
+    public Dijkstra2(int[] data, int[][] matrix, int s) {
+        this.data = data;
+        this.matrix = matrix;
+        this.s = s;
+        int v = data.length;
+        visited = new boolean[v];
+        // 构造一个最小堆
+        PriorityQueue<Node> pq = new PriorityQueue<>();
+        pq.add(new Node(s, 0));
+        dist = new int[v];
+        Arrays.fill(dist, INF);
+        dist[s] = 0;// 源点距离初始化为0
+        while(!pq.isEmpty()) {
+            int curr = pq.remove().w;
+            if(visited[curr]) {
+                continue;
+            }
+            visited[curr] = true;
+            for (int i = 0; i < v; i++) {
+                if(!visited[i]) {
+                    // 必须先判断是不是正无穷再做加法，否则会出现溢出
+                    if(matrix[curr][i] != INF && dist[curr] + matrix[curr][i] < dist[i]) {
+                        dist[i] = dist[curr] + matrix[curr][i];
+                        pq.add(new Node(i, dist[i]));
+                    }
+                }
+            }
+        }
+    }
+}
+
+```
+
+两种的时间复杂度分别是O(V*V)和O(ElogV))
+
+### Bellman-Ford算法
+
+我们上面已经讨论了Dijkstra算法求单源最短路径，但是Dijkstra不能求有负权边的图的单源最短路径， Bellman-Ford算法可以，Bellman-Ford算法也比Dijkstra算法简单，但是时间复杂度是O(VE), 高于Dijkstra(时间复杂度是O(V^2,如果采用优先队列，复杂度是O((ElogV))
+
+算法描述
+
+输入：图和源点
+输出：从源点到其他顶点的最短路径，如图中存在负权环，最短路径无法计算
+
+**1)** 创建一个大小为V(V是图的顶点数量）的dist数组，初始化源点到其他顶点的距离为正无穷，源点自身距离为0.
+
+**2)** 这一步计算最短路径. 下面的步骤重复V-1次
+…..**a)** 对每一条边 u-v，u是起点，v是终点，如果dist[v] > dist[u] + weight(u,v), 更新dist[v]= dist[u] + weight (u,v)，这个过程叫作松弛
+
+**3)** 检测图中是否存在负权环.  对每一条边 u-v
+……如果dist[v] > dist[u] + weight(u,v),说明图中存在负权环
+这一步的原理是第二步已经保证了不包含负权环的情况下，源点到其他顶点的最短路径， 如果我们再把所有的边松弛一次, 对任一顶点还存在更短的距离，说明存在负权环
+
+![image-20200521125727572](./images/bellman-ford.jpg)
+
+```java
+class Graph {
+    class Edge {
+        int src, dest, weight;
+        Edge()
+        {
+            src = dest = weight = 0;
+        }
+    }
+
+    int V, E;
+    Edge[] edge;
+
+    // Creates a graph with V vertices and E edges
+    Graph(int v, int e)
+    {
+        V = v;
+        E = e;
+        edge = new Edge[e];
+        for (int i = 0; i < e; ++i)
+            edge[i] = new Edge();
+    }
+}
+public class BellmanFord {
+
+    public BellmanFord(Graph graph, int src) {
+        int V = graph.V, E = graph.E;
+        int[] dist = new int[V];
+
+        // Step 1: 初始化源点到其他顶点的距离为正无穷
+        for (int i = 0; i < V; ++i)
+            dist[i] = Integer.MAX_VALUE;
+        dist[src] = 0;
+
+        // Step 2: 所有边松弛 V - 1 次. 
+        // 源点到其他顶点的某个顶点的路径最多包含V - 1条边
+        for (int i = 1; i < V; ++i) {
+            for (int j = 0; j < E; ++j) {
+                int u = graph.edge[j].src;
+                int v = graph.edge[j].dest;
+                int weight = graph.edge[j].weight;
+                if (dist[u] != Integer.MAX_VALUE && dist[u] + weight < dist[v])
+                    dist[v] = dist[u] + weight;
+            }
+        }
+
+        // Step 3: 检测所有的负权环. 
+        // 上面的步骤已经求出了不包含负权环的情况下，源点到其他顶点的最短路径. 
+        // 如果我们得到了更短路径，说明有负权环
+        for (int j = 0; j < E; ++j) {
+            int u = graph.edge[j].src;
+            int v = graph.edge[j].dest;
+            int weight = graph.edge[j].weight;
+            if (dist[u] != Integer.MAX_VALUE && dist[u] + weight < dist[v]) {
+                System.out.println("Graph contains negative weight cycle");
+                return;
+            }
+        }
+        printArr(dist, V);
+    }
+    void printArr(int dist[], int V)
+    {
+        System.out.println("Vertex Distance from Source");
+        for (int i = 0; i < V; ++i)
+            System.out.println(i + "\t\t" + dist[i]);
+    }
+    // 测试
+    public static void main(String[] args)
+    {
+        int V = 5; // 图的顶点数量
+        int E = 8; // 图的边的数量
+
+        Graph graph = new Graph(V, E);
+
+        // 添加边0-1 (or A-B)
+        graph.edge[0].src = 0;
+        graph.edge[0].dest = 1;
+        graph.edge[0].weight = -1;
+
+        // 添加边0-2 (or A-C)
+        graph.edge[1].src = 0;
+        graph.edge[1].dest = 2;
+        graph.edge[1].weight = 4;
+
+        // 添加边1-2 (or B-C)
+        graph.edge[2].src = 1;
+        graph.edge[2].dest = 2;
+        graph.edge[2].weight = 3;
+
+        // 添加边1-3 (or B-D)
+        graph.edge[3].src = 1;
+        graph.edge[3].dest = 3;
+        graph.edge[3].weight = 2;
+
+        // 添加边1-4 (or A-E)
+        graph.edge[4].src = 1;
+        graph.edge[4].dest = 4;
+        graph.edge[4].weight = 2;
+
+        // 添加边3-2 (or D-C )
+        graph.edge[5].src = 3;
+        graph.edge[5].dest = 2;
+        graph.edge[5].weight = 5;
+
+        // 添加边3-1 (or D-B)
+        graph.edge[6].src = 3;
+        graph.edge[6].dest = 1;
+        graph.edge[6].weight = 1;
+
+        // 添加边4-3 (or E-D)
+        graph.edge[7].src = 4;
+        graph.edge[7].dest = 3;
+        graph.edge[7].weight = -3;
+        BellmanFord bf = new BellmanFord(graph, 0);
+    }
+```
+
+## 所有点对最短路径
+
+### Floyd算法
+
+Floyd算法用来解决图中所有点对的最短距离
+
+时间复杂度O(V^3)
+
+```java
+public class Floyed {
+    static final int INF = Integer.MAX_VALUE;
+    int V;
+    public static void main(String[] args) {
+        int[][] graph = {
+                {0, 5, INF, 10},
+                {INF, 0, 3, INF},
+                {INF, INF, 0, 1},
+                {INF, INF, INF, 0}};
+        /*
+              10
+       (0)------->(3)
+        |         /|\
+      5 |          |
+        |          | 1
+       \|/         |
+       (1)------->(2)
+            3
+         */
+        Floyed F = new Floyed(graph);
+    }
+
+    public Floyed(int[][] graph) {
+        V = graph.length;
+        int[][] dist = new int[V][V];
+        for (int i = 0; i < V; i++) {
+            for (int j = 0; j < V; j++) {
+                dist[i][j] = graph[i][j];
+            }
+        }
+        // 外层循环是每个点
+        for (int k = 0; k < V; k++) {
+            // 内层两轮循环是点对（i，j)
+            for (int i = 0; i < V; i++) {
+                for (int j = 0; j < V; j++) {
+                    // 注意溢出
+                    if (dist[i][k] != INF && dist[k][j] !=INF && dist[i][k] + dist[k][j] < dist[i][j])
+                        dist[i][j] = dist[i][k] + dist[k][j];
+                }
+            }
+        }
+        // 检测负权环
+        for (int i = 0; i < V; i++) {
+            if(dist[i][i] < 0) {
+                System.out.println("negative cycle");
+            }
+        }
+        printSolution(dist);
+    }
+    void printSolution(int dist[][])
+    {
+        System.out.println("The following matrix shows the shortest "+
+                "distances between every pair of vertices");
+        for (int i=0; i<V; ++i)
+        {
+            for (int j=0; j<V; ++j)
+            {
+                if (dist[i][j]==INF)
+                    System.out.print("INF ");
+                else
+                    System.out.print(dist[i][j]+"   ");
+            }
+            System.out.println();
+        }
+    }
+}
+```
+
+
+
+
+
+## 二分查找
 
 能够使用二分查找的前提
 
@@ -1195,23 +1995,9 @@ while left <= right>:
 + https://leetcode-cn.com/problems/search-a-2d-matrix/
 + https://leetcode-cn.com/problems/find-minimum-in-rotated-sorted-array/
 
-## 10 贪心
+- https://leetcode-cn.com/problems/jump-game-ii/)
 
->贪心算法（又称贪婪算法）是指，在对问题求解时，总是做出在当前看来是最好的选择。也就是说，不从整体最优上加以考虑，他所做出的是在某种意义上的局部最优解。
->贪心算法不是对所有问题都能得到整体最优解，关键是贪心策略的选择，选择的贪心策略必须具备无后效性，即某个状态以前的过程不会影响以后的状态，只与当前状态有关。 -百度百科
-
-应用： 最小生成树，霍夫曼编码
-硬币问题： 必须是倍数关系
-
-### leetCode
-
-- https://leetcode-cn.com/problems/lemonade-change/description/
-- https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-ii/description/
-- https://leetcode-cn.com/problems/assign-cookies/description/
-- https://leetcode-cn.com/problems/walking-robot-simulation/description/
-- [https://leetcode-cn.com/problems/jump-game/ ](https://leetcode-cn.com/problems/jump-game/)、[ https://leetcode-cn.com/problems/jump-game-ii/](https://leetcode-cn.com/problems/jump-game-ii/)
-
-## 11 动态规划(DP)
+## 动态规划(DP)
 
 斐波那契数列
 
@@ -1236,7 +2022,7 @@ while left <= right>:
 + https://leetcode-cn.com/problems/distinct-subsequences/
 + https://leetcode-cn.com/problems/race-car/
 
-## 12 字典树（Trie) 并查集
+## 字典树（Trie) 并查集
 
 ### 字典树
 
@@ -1263,9 +2049,9 @@ leetCode:
 + [朋友圈问题](https://leetcode-cn.com/problems/friend-circles/solution/peng-you-quan-by-leetcode/)
 + [200岛屿问题]()
 
-## 14 高级搜索
+##  高级搜索
 
-## 15 AVL树和红黑树
+## AVL树和红黑树
 
 保证二维维度
 
@@ -1290,7 +2076,7 @@ leetCode:
 红黑树
 
 ![](https://user-gold-cdn.xitu.io/2020/3/10/170c2babf60f77a2?w=764&h=346&f=png&s=224128)
-## 16 位运算
+## 位运算
 
 位运算的运用
 
@@ -1308,7 +2094,7 @@ leetCode:
 
 + [191 位1的个数](https://leetcode-cn.com/problems/number-of-1-bits/)
 
-## 17 布隆过滤器和LRU缓存
+## 布隆过滤器和LRU缓存
 
 实现一个LRU缓存
 
@@ -1383,7 +2169,7 @@ public class LRU {
 
 
 
-## 18 排序算法
+##  排序算法
 
 #### 参考链接
 
@@ -1629,7 +2415,7 @@ public class QuickSort {
 
 >计数排序是一个非基于比较的[排序算法](https://baike.baidu.com/item/排序算法/5399605)，该算法于1954年由 Harold H. Seward 提出。它的优势在于在对一定范围内的整数排序时，它的复杂度为Ο(n+k)（其中k是整数的范围），快于任何比较排序算法。 [1] 当然这是一种牺牲空间换取时间的做法，而且当O(k)>O(n*log(n))的时候其效率反而不如基于比较的排序（基于比较的排序的时间复杂度在理论上的下限是O(n*log(n)), 如归并排序，堆排序）
 
-## 19 字符串
+## 字符串
 
 ### 字符串匹配算法
 
