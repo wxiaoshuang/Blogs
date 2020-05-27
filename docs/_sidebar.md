@@ -17,13 +17,26 @@
      * [入门教程](/typescript/guidebook/)
 * **Node.js**
 * **数据结构与算法**
-    * [算法](/dataStructure-and-algorithm/)
+    * [数组](/dataStructure-and-algorithm/array.md)
+    * [链表](/dataStructure-and-algorithm/linkedList.md)
+    * [栈 队列](/dataStructure-and-algorithm/stack-queue.md)
+    * [堆 堆排序](/dataStructure-and-algorithm/heap.md)
+    * [排序算法](/dataStructure-and-algorithm/sortAlgorithm.md)
+    * [递归和回溯](/dataStructure-and-algorithm/recursion-backtrack.md)
     * [leetcode](/dataStructure-and-algorithm/leetcode.md)
 * **python**
     * [入门教程](/python/guidebook/)
 * **计算机网络**
     * [谢希仁计算机网络笔记](/computer-network/notes/)
+        * [计算机网络性能](/computer-network/notes/计算机网络性能.md)
+        * [计算机网络体系结构](/computer-network/notes/计算机网络体系结构.md)
+        * [物理层](/computer-network/notes/物理层.md)
+        * [数据链路层](/computer-network/notes/数据链路层.md)
+        * [网络层](#网络层)
+        * [运输层](/computer-network/notes/传输层.md)
+        * [https](/computer-network/notes/https.md)
 * **操作系统**
+    * [知识整理](/operating-system/)
 * **编译原理**
 
 

@@ -70,10 +70,46 @@ leetcode解析
   [-1, -1, 2]
 ]
 ```
-题解：
-先排序，然后运用双指针
+
 <!-- tabs:start -->
-    
+
+### **java**
+
+```java
+  class Solution {
+      public List<List<Integer>> threeSum(int[] nums) {
+           List<List<Integer>> res = new ArrayList<>();
+          if(nums == null || nums.length  < 3) {
+              return res;
+          }
+          Arrays.sort(nums);
+          int i = 0;
+          while(i < nums.length) {
+              if(nums[i] > 0) break;
+              if(i > 0 && nums[i] == nums[i-1]) continue;
+              int l = i+1;
+              int r = nums.length - 1;
+              while(l < r) {
+                 int sum = nums[i] + nums[l] + nums[r];
+                 if(sum == 0) {
+                   res.add(Arrays.asList(nums[i], nums[l], nums[l]));
+                   while( l < r && nums[l] == nums[l+1]) l++;
+                   while( l < r && nums[r] == nums[r-1]) r--;
+                   l++;
+                   r--;
+                 } else if(sum < 0) {
+                     l++;
+                 } else {
+                     r--;
+                 }
+              }
+              i++;
+          }
+          return res;
+      }
+  }
+```
+
 ### **javascript**
 
 ```javascript
@@ -114,42 +150,7 @@ var threeSum = function(nums) {
 
 ```
 
-### **java**
 
-```java
-class Solution {
-    public List<List<Integer>> threeSum(int[] nums) {
-         List<List<Integer>> res = new ArrayList<>();
-        if(nums == null || nums.length  < 3) {
-            return res;
-        }
-        Arrays.sort(nums);
-        int i = 0;
-        while(i < nums.length) {
-            if(nums[i] > 0) break;
-            if(i > 0 && nums[i] == nums[i-1]) continue;
-            int l = i+1;
-            int r = nums.length - 1;
-            while(l < r) {
-               int sum = nums[i] + nums[l] + nums[r];
-               if(sum == 0) {
-                 res.add(Arrays.asList(nums[i], nums[l], nums[l]));
-                 while( l < r && nums[l] == nums[l+1]) l++;
-                 while( l < r && nums[r] == nums[r-1]) r--;
-                 l++;
-                 r--;
-               } else if(sum < 0) {
-                   l++;
-               } else {
-                   r--;
-               }
-            }
-            i++;
-        }
-        return res;
-    }
-}
-```
 ### **python**
 
 ```python
@@ -188,7 +189,114 @@ class Solution:
 
 -**`合并两个有序数组`**
 
+```
+给你两个有序整数数组 nums1 和 nums2，请你将 nums2 合并到 nums1 中，使 nums1 成为一个有序数组。
+说明:
+初始化 nums1 和 nums2 的元素数量分别为 m 和 n 。
+你可以假设 nums1 有足够的空间（空间大小大于或等于 m + n）来保存 nums2 中的元素。 
+示例:
+输入:
+nums1 = [1,2,3,0,0,0], m = 3
+nums2 = [2,5,6],       n = 3
+输出: [1,2,2,3,5,6]
+```
+题解：
+先排序，然后运用双指针
+![](./images/array.gif)
 
+<!-- tabs:start -->
+
+### **java**
+```java
+class Solution {
+    public void merge(int[] nums1, int m, int[] nums2, int n) {
+		int p1 = m - 1;
+        int p2 = n - 1;
+        int p = m + n -1;
+        while(p1 >=0 && p2>=0) {
+             nums1[p--] = nums1[p1] > nums2[p2] ? nums1[p1--]: nums2[p2--];
+        }
+        // 表示将nums2数组从下标0位置开始，拷贝到nums1数组中，从下标0位置开始，长度为p2+1
+        System.arraycopy(nums2, 0, nums1, 0, p2 + 1);
+    }
+}
+```
+### **javascript**
+```javascript
+/**
+ * @param {number[]} nums1
+ * @param {number} m
+ * @param {number[]} nums2
+ * @param {number} n
+ * @return {void} Do not return anything, modify nums1 in-place instead.
+ */
+var merge = function(nums1, m, nums2, n) {
+    var p1 = m-1;
+    var p2 = n - 1;
+    var p = m + n -1;
+    while(p1 >=0 && p2 >=0) {
+        nums1[p--] = nums1[p1]>nums2[p2] ? nums1[p1--]:nums2[p2--];
+    }
+    var arrayCopy = function(source, sourceIndex, target, targetIndex,length) {
+        target.splice(targetIndex,length, ...source.slice(sourceIndex,sourceIndex + length))
+    }
+    arrayCopy(nums2,0, nums1,0, p2+1)
+};
+```
+<!-- tabs:end -->
+
+移动零
+```
+给定一个数组 nums，编写一个函数将所有 0 移动到数组的末尾，同时保持非零元素的相对顺序。
+
+示例:
+
+输入: [0,1,0,3,12]
+输出: [1,3,12,0,0]
+说明:
+
+必须在原数组上操作，不能拷贝额外的数组。
+尽量减少操作次数。
+
+```
+<!-- tabs:start -->
+### **java**
+```java
+// version1
+class Solution {
+    public void moveZeroes(int[] nums) {
+       int j = 0;
+       for(int i = 0; i < nums.length;i++) {
+          if(nums[i] != 0) {
+            nums[j++] = nums[i];
+          }  
+       }
+       while(j < nums.length) {
+            nums[j++] = 0;
+       }
+    }
+}
+// version2
+class Solution {
+    public void moveZeroes(int[] nums) {
+       int j = 0;
+       for(int i = 0; i < nums.length;i++) {
+          if(nums[i] != 0) {
+            if(i > j) {
+                nums[j] = nums[i];
+                nums[i] = 0;  
+            }
+            j++;
+          }  
+       }
+    }
+}
+```
+### **javascript**
+```javascript
+
+```
+<!-- tabs:end -->
 ### 链表
 
 链表是以节点的方式来存储
@@ -202,20 +310,21 @@ class Solution:
 1 单链表
 
 ```java
-class ListNode {
+class Node {
     public int val;
     public ListNode next;
     Public ListNode(v) {
         val = v;
     }
 }
-class SLinkedList{
+public class LinkedList{
     int size;
-    ListNode head;
-    public SlinkedList() {
+    Node head;
+    public LinkedList() {
         size = 0;
-        head = new ListNode(0);
+        head = new Node(0); // 头结点
     }
+    // 查询val在链表中的索引
     public int getIndex(int val) {
         if(val < 0 && val >= size) {
             return -1;
@@ -226,15 +335,29 @@ class SLinkedList{
             curr = curr.next;
             index++;
             if(index == val) {
-                return
+                return index
             }
         }
+        return -1
     }
+    // 向链表头部添加节点
     public void addAtHead(int val) {
-        
+        Node node = new Node(val);
+        node.next = head.next;
+        head.next = node;
     }
+    // 向链表尾部添加节点
     public void addAtTail(int val) {
-        
+        Node node = new Node(val);
+        // 找到最后一个节点，最后一个节点的next=null
+        Node curr = head;
+        while(true) {
+            if(curr.next == null) {
+                break;
+            }
+            curr = curr.next;
+        }
+        curr.next = node;
     }
     public void addAtIndex(int val) {
         
@@ -242,18 +365,36 @@ class SLinkedList{
     public void deleteAtIndex(int val) {
         
     }
+   
     public void add(int val) {
-        
+       Node node = new Node(val);
+               // 找到最后一个节点，最后一个节点的next=null
+       Node curr = head;
+       while(true) {
+           if(curr.next == null) {
+               break;
+           }
+           curr = curr.next;
+       }
+       curr.next = node;
     }
     public void remvoe(int val) {
         
+    }
+    public void show() {
+        if(head.next == null) {
+            System.out.println("链表为空");
+        }
+        Node curr = head.next;
+        while(curr!= null) {
+            System.out.print(Node.val+"->");
+            curr = curr.next;
+        }
     }
 }
 ```
 
 
-
-2 双链表
 
 #### 合并两个有序链表
 
@@ -333,21 +474,28 @@ class Solution {
 1 递归
 
 ```java
-public ListNode reverseList(ListNode head) {
-    if(head== null || head.next == null) return head;
-    ListNode p = reverseList(head.next);
-    head.next.next = head;
-    head.next = null;
-    return p;
+public static  ListNode reverseList(ListNode head) {
+       //递归终止条件是当前为空，或者下一个节点为空
+		if(head==null || head.next==null) {
+			return head;
+		}
+		//这里的cur就是最后一个节点
+		ListNode cur = reverseList(head.next);
+		//如果链表是 1->2->3->4->5，那么此时的cur就是5
+		//而head是4，head的下一个是5，下下一个是空
+		//所以head.next.next 就是5->4
+		head.next.next = head;
+		//防止链表循环，需要将head.next设置为空
+		head.next = null;
+		//每层递归函数都返回cur，也就是最后一个节点
+		return cur;
 }
 ```
-
-
 
 2 迭代
 
 ```java
-public ListNode reverseList(ListNode head) {
+public static ListNode reverseList(ListNode head) {
     if(head == null || head.next == null) return head;
     ListNode prev = null;
     ListNode curr = head;
@@ -358,6 +506,38 @@ public ListNode reverseList(ListNode head) {
         curr = nextTemp; 
     }
 }
+```
+
+3 头插法
+
+```java
+// 头插法
+// 10->20->40->30
+//       curr next
+//        |   |
+// dummy  10->20->40->30
+//           curr
+//            |
+// dummy->10  20->40->30
+// dummy->20->10  40->30
+// dummy->20->10->40  30
+// dummy->20->10->40  30
+// dummy->20->10->40->30
+public static ListNode reverse(ListNode head) {
+		if(head == null || head.next == null) {
+            return head;
+        }
+        ListNode dummy = new Node(-1);
+        ListNode curr = head;
+        while(curr != null) {
+            Node next = curr.next;
+            curr.next = dummy.next;
+            dummy.next = curr;
+            curr = next;
+        }
+        return dummy.next;
+	}
+
 ```
 
 

@@ -2,21 +2,24 @@
 
 数组 链表
 
--  https://leetcode-cn.com/problems/container-with-most-water/
--  https://leetcode-cn.com/problems/climbing-stairs/
+-  [盛最多水的容器](https://leetcode-cn.com/problems/container-with-most-water/)
+-  [爬楼梯](https://leetcode-cn.com/problems/climbing-stairs/)
 -  [三数之和](https://leetcode-cn.com/problems/3sum/)(高频老题）
--  https://leetcode-cn.com/problems/reverse-linked-list/
+-  [合并两个有序数组](https://leetcode-cn.com/problems/merge-sorted-array/)
+-  [两数之和](https://leetcode-cn.com/problems/two-sum/)
+-  [移动零](https://leetcode-cn.com/problems/move-zeroes/)
+-  [删除排序数组中的重复项](https://leetcode-cn.com/problems/remove-duplicates-from-sorted-array/)
+-  [两数相加](https://leetcode-cn.com/problems/add-two-numbers/)
+-  [链表中倒数第k个节点](https://leetcode-cn.com/problems/lian-biao-zhong-dao-shu-di-kge-jie-dian-lcof/)
+-  [反转链表](https://leetcode-cn.com/problems/reverse-linked-list/)
+-  [合并两个有序的链表](https://leetcode-cn.com/problems/merge-two-sorted-lists/)
+-  https://leetcode-cn.com/problems/rotate-array/
+-  https://leetcode-cn.com/problems/plus-one/
 -  https://leetcode-cn.com/problems/swap-nodes-in-pairs
 -  https://leetcode-cn.com/problems/linked-list-cycle
 -  https://leetcode-cn.com/problems/linked-list-cycle-ii
 -  https://leetcode-cn.com/problems/reverse-nodes-in-k-group/
--  https://leetcode-cn.com/problems/remove-duplicates-from-sorted-array/
--  https://leetcode-cn.com/problems/rotate-array/
--  https://leetcode-cn.com/problems/merge-two-sorted-lists/
--  https://leetcode-cn.com/problems/merge-sorted-array/
--  [两数之和](https://leetcode-cn.com/problems/two-sum/)
--  https://leetcode-cn.com/problems/move-zeroes/
--  https://leetcode-cn.com/problems/plus-one/
+
 
 
 

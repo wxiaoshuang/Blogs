@@ -23,16 +23,22 @@
 
 <!-- tabs:start -->
 
-### **js**
+### **java**
 
-```js
-var a = 111
+```java
+int a = 111
 ```
 
-### **typescript**
+### **javascript**
 
-```typescript
-let a: number = 111
+```javascript
+let a = 111
+```
+### **python**
+
+```python
+if a = 111:
+    pass
 ```
 
 <!-- tabs:end -->
