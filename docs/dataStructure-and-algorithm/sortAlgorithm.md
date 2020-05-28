@@ -1,19 +1,19 @@
 # 排序算法
 
-## 各大算法比较
+## 各大算法对比
 
-| 排序算法 | 平均时间复杂度 | 最好时间复杂度 | 最坏时间复杂度 | 空间复杂度 | 排序方式  | 是否稳定 |
-| -------- | -------------- | -------------- | -------------- | ---------- | --------- | -------- |
-| 冒泡排序 | O(n^2)         | O(n)           | O(n^2)         | O(1)       | in-place  | 是       |
-| 选择排序 | O(n^2)         | O(n^2)         | O(n^2)         | O(1)       | in-place  | 否       |
-| 插入排序 | O(n^2)         | O(n)           | O(n^2)         | O(1)       | in-place  | 是       |
-| 希尔排序 | O(nlogn)       | O(nlogn)       | O(n^2)         | O(1)       | in-place  | 否       |
-| 归并排序 | O(nlogn)       | O(nlogn)       | O(nlogn)       | O(n)       | out-place | 是       |
-| 快速排序 | O(nlogn)       | O(nlogn)       | O(n^2)         | O(n)       | in-place  | 否       |
-| 堆排序   | O(nlogn)       | O(nlogn)       | O(nlogn)       | O(1)       | in-place  | 否       |
-| 计数排序 | O(n+k)         | O(n+k)         | O(n+k)         | O(n+k)     | out-place | 是       |
-| 基数排序 | O(n*k)         | O(n*k)         | O(n*k)         | O(n)       | out-place | 是       |
-| 桶排序   | O(n*k)         | O(n*k)         | O(n^2)         | O(n+k)     | out-place | 是       |
+| 排序算法 | 平均时间复杂度 | 最好时间复杂度 | 最坏时间复杂度 | 空间复杂度 | 排序方式 | 是否基于比较 | 是否稳定 |
+| -------- | -------------- | -------------- | -------------- | ---------- | -------- | ------------ | -------- |
+| 冒泡排序 | O(n^2)         | O(n)           | O(n^2)         | O(1)       | 原地     | 是           | 是       |
+| 选择排序 | O(n^2)         | O(n^2)         | O(n^2)         | O(1)       | 原地     | 是           | 否       |
+| 插入排序 | O(n^2)         | O(n)           | O(n^2)         | O(1)       | 原地     | 是           | 是       |
+| 希尔排序 | O(nlogn)       | O(nlogn)       | O(n^2)         | O(1)       | 原地     | 是           | 否       |
+| 归并排序 | O(nlogn)       | O(nlogn)       | O(nlogn)       | O(n)       | 非原地   | 是           | 是       |
+| 快速排序 | O(nlogn)       | O(nlogn)       | O(n^2)         | O(n)       | 原地     | 是           | 否       |
+| 堆排序   | O(nlogn)       | O(nlogn)       | O(nlogn)       | O(1)       | 原地     | 是           | 否       |
+| 计数排序 | O(n+k)         | O(n+k)         | O(n+k)         | O(n+k)     | 非原地   | 否           | 是       |
+| 基数排序 | O(n*k)         | O(n*k)         | O(n*k)         | O(n)       | 非原地   | 否           | 是       |
+| 桶排序   | O(n+k)         | O(n+k)         | O(n^2)         | O(n+k)     | 非原地   | 否           | 是       |
 
 ## 冒泡排序
 
@@ -28,16 +28,12 @@
 
 #### 动画演示
 
-<center>
-
 ![](./images/bubbleSort2.gif)
-</center>
+
+
 
 #### 代码参考
 
-<!-- tabs:start -->
-
-###### **java**
 ```java
 public class BubbleSort {
     public static void bubbleSort(int[] arr) {
@@ -59,28 +55,6 @@ public class BubbleSort {
     }
 }
 ```
-###### **javascript**
-```javascript
-function bubbleSort(arr) {
-    for (var i = 0; i < arr.length - 1; i++) {
-        // 加一个标识，如果没有发生交换，说明已经完全升序了，那么就可以退出循环了
-        var flag = false;
-        for(var j = 0; j < arr.length -1 - i; j++) {
-            if(arr[j] > arr[j+1]) {
-                flag = true;
-                var tmp = arr[j];
-                arr[j] = arr[j + 1];
-                arr[j + 1] = tmp;
-            }
-        }
-        if(!flag) {
-            break;
-        }
-    }
-}
-```
-<!-- tabs:end -->
-
 #### 复杂度分析
 
 
@@ -110,10 +84,9 @@ Bubble Sort中有两个嵌套循环。
 3. 以此类推，直到全部待排序的数据元素的个数为零。
 
 #### 动画演示
-<center>
-
 ![](./images/selectionSort.gif)
-</center>
+
+
 
 #### 参考代码
 
@@ -155,14 +128,24 @@ function insertionSort(arr) {
 }
 ```
 
+#### 算法分析
+双层循环没法提前终止，所以平均，最好，最坏时间复杂度都是O(n^2),第二在选择交换的过程中，改变了相对位置，所以算法是不稳定的
 
 ## 插入排序
 
+插入排序，一般也被称为直接插入排序。对于**少量元素**的排序，它是一个有效的算法 。算法是将一个记录插入到已排好序的序列中，从而得到一个新的有序序列（将序列的第一个数据看成是一个有序的子序列，然后从第二个记录逐个向该有序的子序列进行有序的插入，直至整个序列有序）
+
+图解如下
+
+![image-20200528135834216](./images/insert.png)
+
 #### 动画演示
 <center>
-
 ![](./images/insertionSort1.gif)
 </center>
+
+
+
 
 #### 参考代码
 
@@ -213,9 +196,18 @@ function insertionSort(arr) {
 
 我们插入的时候是前面的大于后面的才移动和交换，相同数据不会移动和交换，所以插入排序是稳定的算法
 
+##### 总结
+1.在大多数元素已经有序的情况下，插入排序的工作量较小
+
+这个结论很明显，如果一个数组大部分元素都有序，那么数组中的元素自然不需要频繁地进行比较和交换。
+
+2.在元素数量较少的情况下，插入排序的工作量较小
+
+这个结论更加显而易见，插入排序的工作量和n的平方成正比，如果n比较小，那么排序的工作量自然要小得多。
+
 ## 希尔排序
 
-> 希尔排序(Shell's Sort)是**插入排序**的一种又称“缩小增量排序”（Diminishing Increment Sort），是直接插入排序算法的一种更高效的改进版本。希尔排序是非稳定排序算法
+> 希尔排序是**插入排序**的一种，又称"缩小增量排序"，是直接插入排序算法的一种更高效的改进版本。希尔排序是非稳定排序算法
 >
 > 希尔排序是把记录按下标的一定增量分组，对每组使用直接插入排序算法排序；随着增量逐渐减少，每组包含的关键词越来越多，当增量减至1时，整个文件恰被分成一组，算法便终止
 >
@@ -224,13 +216,19 @@ function insertionSort(arr) {
 > 1. 插入排序在对几乎已经排好序的数据操作时，效率高，即可以达到线性排序的效率。
 > 2. 但插入排序一般来说是低效的，因为插入排序每次只能将数据移动一位。
 
-我们增量初始化为数列大小的一半，以后每次减半，对{5,8,6,4,2,1,7}这个序列，下图展示了算法的运行步骤和结果
+在插入排序中，当一个元素要插入到一个前面的位置的时候，需要移动很多元素，(比如序列{2,3,4,5,1},要把1插入到{2,3,4，5}中的话，2,3,4,5都要向后移动)，希尔排序的思想是允许交换更远的元素
 
-![image-20200527220353452](G:\Blogs\docs\dataStructure-and-algorithm\images\shellSort.png)
+在希尔排序中，我们让数组距离h的元素,发生交换（对其进行插入排序），以后不断减小h, 直到h等于1，此时再进行最后一轮插入排序，那么排序就完成了，这个h称为增量
+
+为了方便演示，我们增量初始化为数列大小的一半，以后每次减半，对{5,8,6,4,2,1,7}这个序列，下图展示了算法的运行步骤和结果
 
 ![image-20200527220005873](./images/shellSort.png)
 
-其中4， 2， 1就叫做增量序列
+其中分组跨度4， 2， 1就叫做增量序列
+
+#### 动画演示
+
+![](./images/shellSort.gif)
 
 #### 示例代码
 
@@ -280,7 +278,7 @@ public class ShellSort {
 
 希尔排序利用分组粗调的方式使算法的复杂度小于O(n^2), 但是在某些极端情况下，希尔排序的最坏时间复杂度依然是O(n^2), 设置比直接插入排序更慢
 
-![image-20200527223230200](G:\Blogs\docs\dataStructure-and-algorithm\images\shellSortBad.png)
+![image-20200527223230200](./images/shellSortBad.png)
 
 看看上面这个数组，如果我们按照之前的折半取增量的分组思路，无论是以4为增量，还是以2为增量，每组内部的元素都没有任何交换。一直到我们把增量缩减为1，数组才会按照直接插入排序的方式进行调整。
 
@@ -458,19 +456,135 @@ T(n) = 2*T(n/2) + n
 
 ## 快速排序
 
-动画演示
+快速排序算法通过多次比较和交换来实现排序，其排序流程如下： 
 
-![](./images/quickSort1.gif)
++ (1)首先设定一个分界值,一般选左边界或者右边界，通过该分界值将数组分成左右两部分。
 
-实例代码
++ (2)将大于分界值的数据集中到数组右边，小于等于分界值的数据集中到数组的左边。此时，左边部分中各元素都小于等于分界值，而右边部分中各元素都大于分界值。这个过程叫做`partition`
+
++ (3)然后，左边和右边的数据可以独立排序。对于左侧的数组数据，又可以取一个分界值，将该部分数据分成左右两部分，同样在左边放置较小值，右边放置较大值。右侧的数组数据也可以做类似处理。
+
++ (4)重复上述过程，直到不可以再分区，可以看出，这是一个递归定义。通过递归将左侧部分排好序后，再递归排好右侧部分的顺序。当左、右两个部分各数据排序完成后，整个数组的排序也就完成了
+
+#### 动画演示
+
+![](./images/quickSort2.gif)
+
+#### 示例代码
+
+```java
+public class QuickSort {
+    public static void sort(int arr[]) {
+        int n = arr.length-1;
+        quickSort2(arr, 0, n);
+    }
+    public static void quickSort(int[] arr, int left, int right) {
+       if(left < right) {
+           int pivotIndex = partition(arr, left, right);
+           quickSort(arr, left, pivotIndex-1);
+           quickSort(arr, pivotIndex+1, right);
+       }
+    }
+    private static int partition(int[] arr, int left, int right) {
+        int pivot = arr[left];
+        int l = left;
+        int r = right;
+        while(l < r) {
+            while(l < r && arr[r] > pivot) {
+                r--;
+            }
+            while(l < r && arr[l] <= pivot) {
+                l++;
+            }
+            if (l<r) {
+                int tmp = arr[l];
+                arr[l] = arr[r];
+                arr[r] = tmp;
+            }
+        }
+        //pivot和指针重合点交换
+        int p = arr[l];
+        arr[l] = arr[left];
+        arr[left] = p;
+        return l;
+    }
+
+}
+
 ```
-class QuickSort {
-	public static void quickSort() {
-		
-	}
+
+其实分区函数partition有很多种写法, 这里是用的双指针法，还有挖坑法，有兴趣的童鞋可以去了解一下
+
+#### 算法分析
+当分区总是将数组分成两个相等的一半时，就会发生快速排序的最佳情况，如归并排序。
+当发生这种情况时，递归的深度只有O(log N）。
+由于每个级别进行O（N）比较，时间复杂度为O（N log N），空间复杂度是O(logn)
+
+
+
+![image-20200528150948535](G:\Blogs\docs\dataStructure-and-algorithm\images\quikcSortAverageTree.png)
+
+来考虑这样一种情况，假设我们选择左边界，如果序列右侧都比分界大，那么这个递归树就严重不平衡，直接退化成为链表，递归深度变成了n，时间复杂度退化成O(n^2)，空间复杂度变成O(n)
+
+![image-20200528151749299](G:\Blogs\docs\dataStructure-and-algorithm\images\quickSortBad.png)
+
+如何避免这个问题呢? 其实很好解决，分界不要选在一个固定的位置，而应该**随机选取**，这种快排也叫作**随机快排**，这种随机化版本的快速排序在任何N个元素的输入数组上预期的时间复杂度为O（N log N）（如何证明有兴趣的自己去研究）
+
+综上：
+快排的平均时间复杂度是O(nlogn),最好是O(nlogn)，最坏是O(n^2)
+快排的平均空间复杂度是O(nlogn),最好是O(logn)，最坏是O(n)
+
+#### 随机快速代码参考
+
+分界不选在一个固定的位置，而是随机选取
+
+```java
+public class QuickSort {
+    public static void sort(int arr[]) {
+        int n = arr.length-1;
+        quickSort2(arr, 0, n);
+    }
+    public static void quickSort(int[] arr, int left, int right) {
+       if(left < right) {
+           int pivotIndex = partition(arr, left, right);
+           quickSort(arr, left, pivotIndex-1);
+           quickSort(arr, pivotIndex+1, right);
+       }
+    }
+    private static int partition(int[] arr, int left, int right) {
+        // 随机产生区间[left, right]的某个索引
+        int randomIndex = (int) (Math.random() * (right - left + 1));
+        swap(arr, left, randomIndex);
+        int pivot = arr[left];
+        int l = left;
+        int r = right;
+        while(l < r) {
+            while(l < r && arr[r] > pivot) {
+                r--;
+            }
+            while(l < r && arr[l] <= pivot) {
+                l++;
+            }
+            if (l<r) {
+                int tmp = arr[l];
+                arr[l] = arr[r];
+                arr[r] = tmp;
+            }
+        }
+        //pivot和指针重合点交换
+        int p = arr[l];
+        arr[l] = arr[left];
+        arr[left] = p;
+        return l;
+    }
+    private static void swap(int[] arr, int i , int j) {
+        int tmp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = tmp;
+    }
+
 }
 ```
-
 
 
 ## 堆排序
@@ -528,7 +642,9 @@ public class HeapSort {
 
 以这个数组为例，看看第一步heapify堆化的过程
 
-![image-20200527234409742](G:\Blogs\docs\dataStructure-and-algorithm\images\heapifyArr.png)
+![image-20200527234409742](./images/heapifyArr.png)
+
+
 
 完全二叉出树的第一个非叶子节点的索引是`(n -1) / 2`,从第一个非叶子节点开始堆化，一直到第一个节点，就构建了一个最大堆
 
@@ -570,9 +686,6 @@ public class HeapSort {
 #### 示例代码
 
 ##### 第一版
-
-###### **java**
-
 ```java
 // version 1
 public class CountingSort {
@@ -602,9 +715,6 @@ public class CountingSort {
 
 ```
 
-###### **javascript**
-
-###### **python**
 
 上面已经实现了一个计数排序，
 
@@ -851,7 +961,7 @@ public class RadixSort {
 
 4.按顺序访问桶，将桶中的元素依次放回到原序列中对应的位置。
 
-![img](G:\Blogs\docs\dataStructure-and-algorithm\images\bucketSort,png)
+![img](./images/bucketSort,png)
 
 
 
@@ -860,12 +970,8 @@ public class RadixSort {
 桶排序可以排序浮点型数据，这里我们考虑double型数组
 
 ```java
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.ArrayList;
+import java.util.*
 public class BucketSort {
-    // 测试
     public static void main(String[] args) {
         double[] arr = {10.3, 60.4, 30.7, -20.4, 10, -70, 60};
         bucketSort(arr);
@@ -883,32 +989,52 @@ public class BucketSort {
                 min = v;
             }
         }
-        // 计算桶的数量，这个根据数据的特点灵活选择
+        // 计算桶的数量
         int bucketNum = (int) ((max - min) / n + 1);
         // 初始化桶
-        List<List<Double>> bucket = new ArrayList<>();
+        LinkedList<Double>[] bucket = new LinkedList[bucketNum];
         for (int i = 0; i < bucketNum; i++) {
-            bucket.add(new ArrayList<Double>());
+            bucket[i] = new LinkedList<Double>();
         }
         // 将元素分配到对应的桶中
         for (int i = 0; i < n; i++) {
             int index = (int) ((arr[i] - min ) / n);
-            bucket.get(index).add(arr[i]);
+            bucket[index].add(arr[i]);
         }
-        // 对每个桶进行排序
-        for(int i = 0; i < bucket.size(); i++){
-            // 底层是归并排序和TimSort，都是稳定的排序
-            Collections.sort(bucket.get(i));
+        // 对每个桶的元素进行排序
+        for(int i = 0; i < bucket.length; i++){
+            Collections.sort(bucket[i]);
         }
         // 依次取出桶中的元素
         int index = 0;
-        for(int i = 0; i < bucket.size(); i++){
-            for(int j = 0; j < bucket.get(i).size(); j++){
-                arr[index++] = bucket.get(i).get(j);
+        for(int i = 0; i < bucket.length; i++){
+            // 依次取出当前桶中的元素,也就是迭代链表
+            Iterator<Double> iterator = bucket[i].iterator();
+            while(iterator.hasNext()){
+                arr[index++] = iterator.next();
             }
+
         }
     }
 }
+
 ```
 
-最后一个排序算法的复杂度分析留给你们
+#### 算法分析
+对N个数据进行桶排序的时间复杂度分为两部分：
+
+　　1. 对每一个数据进行映射函数的计算（映射函数确定了数据将被分到哪个桶），时间复杂度为O(N)。
+
+　　2. 对桶内数据的排序，时间复杂度为∑ O(Ni*logNi) ，其中Ni 为第i个桶的数据量。
+
+对于N个待排数据，M个桶，平均每个桶[N/M]个数据的桶排序平均时间复杂度为：O(N)+O(M*(N/M)*log(N/M))=O(N+N*(logN-logM))=O(N+N*logN-N*logM)，当N=M时，即极限情况下每个桶只有一个数据时。桶排序的最好效率能够达到O(N)。
+
+对于相同数量的数据，桶的数量越多，数据分散得越平均，桶排序的效率越高，可以说，桶排序的效率是空间的牺牲换来的。
+
+*******************
+
+参考：
+
++ https://visualgo.net/zh/sorting
++ https://www.geeksforgeeks.org/sorting-algorithms/
++ https://www.cnblogs.com/xiaowenshu/p/10260784.html
