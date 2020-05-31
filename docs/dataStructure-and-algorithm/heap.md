@@ -1,7 +1,8 @@
 ## 堆
 >堆是计算机科学中一类特殊的数据结构的统称。堆通常是一个可以被看做一棵树的数组对象。堆总是满足下列性质：
  堆中某个节点的值总是不大于或不小于其父节点的值；
- 堆总是一棵完全二叉树。
+ 
+ **堆总是一棵完全二叉树**
 
 将根节点最大的堆叫做最大堆或大根堆，根节点最小的堆叫做最小堆或小根堆。常见的堆有二叉堆、斐波那契堆等
 
@@ -241,6 +242,54 @@ class Solution {
         }
         return arr;
     }
+}
+```
+求数组的第k大元素
+
+```java
+public class KthLargest {
+    public static void main(String[] args) {
+        int[] arr = { 100, 60, 40, 78, 30, 68};
+        System.out.println(kthLargest(arr, 6));
+    }
+    public static int kthLargest(int[] arr, int k) {
+        if(k > arr.length) {
+            throw new IllegalArgumentException("illegal k!!!");
+        }
+        buildHeap(arr, k); // O(k)
+        // O(n-k)
+        for (int i = k; i < arr.length; i++) {
+            if(arr[i] > arr[0]) {
+                arr[0] = arr[i];
+                // O(logk)
+                shiftDown(arr, 0, k);
+            }
+        }
+        return arr[0];
+    }
+    private static void buildHeap(int[] arr, int k) {
+        for (int i = (k -1) / 2; i >=0; i--) {
+            shiftDown(arr, i, k);
+        }
+    }
+     private static void shiftDown(int[] arr, int i, int n) {
+        int childIndex = 2*i + 1;
+        while(2*i + 1 < n) {
+            if(2*i + 2 < n && arr[2*i+2] < arr[2*i + 1]) {
+                childIndex++;
+            }
+            if(arr[i] <= arr[childIndex]) {
+                break;
+            }
+            swap(arr, i, childIndex);
+            i = childIndex;
+        }
+     }
+     private static void swap(int[] arr, int i , int j) {
+        int tmp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = tmp;
+     }
 }
 ```
 

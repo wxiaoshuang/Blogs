@@ -18,15 +18,15 @@
 
 <3> 不能使用产生回路的边。 
 
-构造最小生成树的算法主要有：克鲁斯卡尔（Kruskal）算法和普利姆（Prim）算法, 他们都遵循以上准则。
+构造最小生成树的算法主要有：克鲁斯卡尔（Kruskal）算法和普利姆（Prim）算法, 他们都遵循以上准则。这两种算法都是贪心算法的应用
 
 ### Kruskal算法
 算法描述：
 
-1. 新建图G，G中拥有原图中相同的节点，但没有边；
+1. 新建图G，G中拥有原图中相同的节点V，但没有边；
 2. 将原图中所有的边按权值从小到大排序；
 3. 从权值最小的边开始，如果这条边连接的两个节点于图G中不在同一个连通分量中，则添加这条边到图G中；
-4. 重复3，直至图G中所有的节点都在同一个连通分量中。
+4. 重复3，直至图G中有V - 1条边。
 
 关于第3条：如何判断两个顶点是否在图G中处于一个联通分量？
 
@@ -35,132 +35,76 @@
 算法代码：
 
 ```java
-import java.util.*;
-
 public class Kruskal {
-    class Edge {
-        int start;
-        int end;
-        int weight;
-
-        public Edge(int start, int end, int weight) {
-            this.start = start;
-            this.end = end;
-            this.weight = weight;
-        }
-
-        @Override
-        public String toString() {
-            return "<" + start + "," + end + ">=" + weight;
+    private static class Edge {
+        int s;
+        int e;
+        int w;
+        Edge(int s, int e, int w) {
+            this.s = s;
+            this.e = e;
+            this.w = w;
         }
     }
-
-    private static final int INF = Integer.MAX_VALUE;
-    int[] data; // 顶点
-    int[][] matrix; // 邻接矩阵
-
-    //    List<Edge> edges; // 边
     public static void main(String[] args) {
-        int[] data = new int[]{0, 1, 2, 3, 4, 5, 6};// 7个顶点
-        // 二维数组表示邻接矩阵，用来描述顶点相连的边的权重
+          /* Let us create following weighted graph
+                 10
+            0--------1
+            |  \     |
+           6|   5\   |15
+            |      \ |
+            2--------3
+                4       */
         int[][] matrix = new int[][]{
-                {INF, 5, 7, INF, INF, INF, 2},
-                {5, INF, INF, 9, INF, INF, 3},
-                {7, INF, INF, INF, 8, INF, INF},
-                {INF, 9, INF, INF, INF, 4, INF},
-                {INF, INF, 8, INF, INF, 5, 4},
-                {INF, INF, INF, 4, 5, INF, 6},
-                {2, 3, INF, INF, 4, 6, INF}
+                {0,  10, 6, 5},
+                {10, 0,  0, 15},
+                {6,  0,  0, 4},
+                {5,  15, 4, 0},
         };
-        Kruskal k = new Kruskal(data, matrix);
-        k.kruskal();
+        Kruskal.kruskal(matrix);
     }
-
-    public Kruskal(int[] data, int[][] matrix) {
-        this.data = data;
-        this.matrix = matrix;
-    }
-
-    public void kruskal() {
-        List<Edge> edges = this.getEdges(matrix);
-        int edgeNum = edges.size();
-        sortEdges(edges);
-        int[] ends = new int[edgeNum];
-        // 创建结果数组，保存最后的最小生成树
-        Edge[] res = new Edge[edgeNum];
+    public static void kruskal(int[][] graph) {
+        int V = graph[0].length;
+        List<Edge> edges = getEdges(graph);
+        Collections.sort(edges, (a, b) -> a.w - b. w);
+        Iterator<Edge> it = edges.iterator();
+        int[] ends = new int[V];
         int count = 0;
-        System.out.println(edges);
-        // 遍历edges，判断边是否构成了回路，如果没有，就加入，否在就寻找下一个边
-        for (int i = 0; i < edgeNum; i++) {
-            Edge edge = edges.get(i);
-            // 获取一条边的两个顶点的索引p1,p2
-            int p1 = getIndex(edge.start);
-            int p2 = getIndex(edge.end);
-            // p1和p2的终点
-            int end1 = getEnd(p1, ends);
-            int end2 = getEnd(p2, ends);
-            // 边的两个顶点的终点不同，加入不会构成回路，那么就可以加进去最小生成树
-            if (end1 != end2) {
-                ends[end1] = end2;
+        Edge[] res = new Edge[V - 1];
+        while(it.hasNext()) {
+            Edge edge = it.next();
+            int s = edge.s;
+            int e = edge.e;
+            if(getEnd(s, ends) != getEnd(e, ends)) {
+                ends[s] = e;
                 res[count++] = edge;
             }
-            // 已经加了顶点-1条边，那么就可以终止循环了
-            if (count >= data.length - 1) break;
-        }
-        for (int i = 0; i < count; i++) {
-            System.out.println(res[i]);
-        }
-    }
-
-    // 获取顶点的索引
-    private int getIndex(int v) {
-        for (int i = 0; i < this.data.length; i++) {
-            if (this.data[i] == v) {
-                return i;
+            if(count == V-1) {
+                break;
             }
         }
-        return -1;
-    }
+        for (int i = 0; i < count; i++) {
+            System.out.println(res[i].s + " -> " + res[i].e + ":" + res[i].w) ;
+        }
 
-    /**
-     * 获取下标为i的顶点的终点
-     *
-     * @param i    下标为i的顶点
-     * @param ends 记录了各个顶点的终点是哪个顶点（索引）
-     * @return 下标为i的顶点的终点索引
-     */
-    private int getEnd(int i, int[] ends) {
-        // 表示终点不是自身，因为初始化的时候ends[i]均为0
-        // while循环是要一直找下去，直到找到终点
-        while (ends[i] != 0) {
+    }
+    private  static int getEnd(int i, int[] ends) {
+        while(ends[i] != 0) {
             i = ends[i];
         }
         return i;
     }
-
-    // 将矩阵处理成边
-    private List<Edge> getEdges(int[][] matrix) {
-        List<Edge> res = new ArrayList<>();
-        for (int i = 0; i < data.length; i++) {
-            // 自己不连接自己 j=i+1
-            for (int j = i + 1; j < data.length; j++) {
-                // 不连通的顶点不生成边
-                if (matrix[i][j] != INF) {
-                    res.add(new Edge(data[i], data[j], matrix[i][j]));
+    private  static List<Edge> getEdges(int[][] graph) {
+        List<Edge> edges = new ArrayList<>();
+        int V = graph[0].length;
+        for (int i = 0; i < V; i++) {
+            for (int j = i + 1 ; j < V; j++) {
+                if(graph[i][j] > 0) {
+                    edges.add(new Edge(i, j, graph[i][j]));
                 }
             }
         }
-        return res;
-    }
-
-    // 对边排序,按照权重升序
-    private void sortEdges(List<Edge> edges) {
-        Collections.sort(edges, new Comparator<Edge>() {
-            @Override
-            public int compare(Edge a, Edge b) {
-                return a.weight - b.weight;
-            }
-        });
+        return edges;
     }
 }
 ```
@@ -183,12 +127,17 @@ b.将v加入集合Vnew中，将<u, v>边加入集合Enew中；
 
 算法步骤
 
-***Algorithm\***
+***Algorithm**
 **1)** 创建一个集合*mstSet* 用来跟踪MST中的所有顶点
+
 **2)** 图的每个顶点的距离初始成正无穷. 第一个顶点距离初始为0以便第一个选中， dist={0,INF,INF,INF.....}
+
 **3)** 当*mstSet*不包含图中所有的顶点时，重复下面的步骤
+
 ….**a)** 在不在*mstSet*集合的顶点中，选中一个顶点距离最小的顶点u
+
 ….**b)** 将u加入到 mstSet.
+
 ….**c)** 更新u相邻顶点的距离. 对于每一个相邻的顶点 *v*,如果 *u-v* 边的权重小于dist[v], dist[v]更新成weight(u, v)
 
 算法图解
@@ -226,10 +175,6 @@ b.将v加入集合Vnew中，将<u, v>边加入集合Enew中；
 
 
 算法代码
-
-<!-- tabs:start -->
-
-### ****java****
 
 ```java
 import java.util.Arrays;
@@ -311,14 +256,3 @@ public class Prim {
 
 ```
 
-### **javascript**
-
-```javascript
-function Prim() {
-    this.prim = function() {
-        
-    }
-}
-```
-
-<!-- tabs:end -->

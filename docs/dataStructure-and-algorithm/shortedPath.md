@@ -347,7 +347,7 @@ public class Dijkstra2 {
 
 ```
 
-两种的时间复杂度分别是O(V*V)和O(ElogV))
+两种的时间复杂度分别是O(V*V)和O(VlogE)
 
 ### Bellman-Ford算法
 
@@ -413,7 +413,7 @@ public class BellmanFord {
                 if (dist[u] != Integer.MAX_VALUE && dist[u] + weight < dist[v])
                     dist[v] = dist[u] + weight;
             }
-        }
+        }                                                                                       
 
         // Step 3: 检测所有的负权环. 
         // 上面的步骤已经求出了不包含负权环的情况下，源点到其他顶点的最短路径. 
