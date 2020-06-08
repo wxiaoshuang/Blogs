@@ -57,6 +57,251 @@ public class ArrayStack {
 
 使用栈，计算一个表达式的值`3 + 4 * 8 - 2`
 
+算法思路：
+
+1. 用两个栈，一个存放数据，一个存放运算符，对于表达式
+
+2. 创建一个指针index,  从左到右扫描
+
+3. 如果是数值，存放进去数据栈
+
+4. 如果是运算符，分两种情况，
+
+   4.1.  如果发现符号栈为空，直接入栈
+
+   4.2.  如果符号栈有操作符，就进行比较
+
+   ​	4.2.1.   如果当前的运算符的优先级小于或者等于栈顶的操作符的优先级，则从符号栈顶弹出一个操作符，从数据栈中弹出两个数据，计算，结果入数据栈，再将当前的操作符入符号栈
+
+   ​	4.2.2.   如果当前的运算符的优先级大于栈顶的操作符的优先级，则直接入栈
+
+5. 当表达式扫描完毕，顺序pop数据栈中的数据和符号栈中的操作符，运算
+
+6. 最后数据栈的结果就是表达式的结果
+
+   
+
+用代码来实现上面的算法
+
+```java
+import java.util.Stack;
+
+public class Calculator {
+    public static void main(String[] args) {
+     String expression = "120+3*4-4/2";
+     int res = calculateExpressionValue(expression);
+     System.out.printf("表达式%s的值是%d", expression, res);
+    }
+    public static int calculateExpressionValue(String expression) {
+        if(expression == null || expression.length() ==0) {
+            return 0;
+        }
+        Stack<Integer> dataStack = new Stack<>();
+        Stack<Character> operatorStack = new Stack<>();
+        int index = 0;
+        int num1 = 0;
+        int num2 = 0;
+        int res = 0;
+        char oper = 0;
+        char ch = ' ';
+        // 扫描表达式
+        while (true) {
+            ch = expression.charAt(index); // 这种取法只可以计算一位数的四则运算
+            // 如果是操作符
+            if (isOperator(ch)) {
+                // 操作符栈不为空
+                if (!operatorStack.empty()) {
+                    // 如果当前操作符的优先级小于等于栈顶操作符的优先级，取数计算
+                    if (priority(ch) <= priority(operatorStack.peek())){
+                        num1 = dataStack.pop();
+                        num2 = dataStack.pop();
+                        oper = operatorStack.pop();
+                        res = calculate(num1, num2, oper);
+                        // 计算结果入栈
+                        dataStack.push(res);
+                        // 当前操作符入栈
+                        operatorStack.push(ch);
+                    } else {
+                        operatorStack.push(ch);
+                    }
+                } else {
+                    operatorStack.push(ch);
+                }
+            } else {
+                // 如果是数据
+                dataStack.push(ch - 48); // '0'在ASCII中是48
+            }
+            index++;
+            // 扫描结束
+            if (index >= expression.length()) {
+                break;
+            }
+        }
+        while(true) {
+            if(operatorStack.isEmpty()) {
+                break;
+            }
+            num1 = dataStack.pop();
+            num2 = dataStack.pop();
+            oper = operatorStack.pop();
+            res = calculate(num1, num2, oper);
+            dataStack.push(res);
+        }
+        return dataStack.peek();
+    }
+    // 运算符的优先级
+    public static int priority(char val) {
+        if (val == '*' || val == '/') {
+            return 1;
+        } else if (val == '+' || val == '-') {
+            return 0;
+        } else {
+            return -1;
+        }
+    }
+    // 是否是运算符
+    public static boolean isOperator(char val) {
+        return val == '*' || val == '/' || val == '+' || val == '-';
+    }
+    // 两个数运算
+    public static int calculate(int num1, int num2, char operator) {
+        int res = 0;
+        switch (operator) {
+            case '+':
+                res = num1 + num2;
+                break;
+            case '-':
+                res = num2 - num1; // 注意顺序
+                break;
+            case '*':
+                res = num1 * num2;
+                break;
+            case '/':
+                res = num2 / num1;
+                break;
+        }
+        return res;
+    }
+}
+
+```
+
+多位数的运算
+
+```java
+import java.util.Stack;
+
+public class Calculator {
+    public static void main(String[] args) {
+     String expression = "70+2*6-4+18";
+     int res = calculateExpressionValue(expression);
+     System.out.printf("表达式%s的值是%d", expression, res);
+    }
+    public static int calculateExpressionValue(String expression) {
+        if(expression == null || expression.length() ==0) {
+            return 0;
+        }
+        Stack<Integer> dataStack = new Stack<>();
+        Stack<Character> operatorStack = new Stack<>();
+        int index = 0;
+        int num1 = 0;
+        int num2 = 0;
+        int res = 0;
+        char oper = 0;
+        char ch = ' ';
+        String keepNum = ""; // 拼接多位数
+        // 扫描表达式
+        while (true) {
+            ch = expression.charAt(index); // 这种取法只可以计算一位数的四则运算
+            // 如果是操作符
+            if (isOperator(ch)) {
+                // 操作符栈不为空
+                if (!operatorStack.empty()) {
+                    // 如果当前操作符的优先级小于等于栈顶操作符的优先级，取数计算
+                    if (priority(ch) <= priority(operatorStack.peek())){
+                        num1 = dataStack.pop();
+                        num2 = dataStack.pop();
+                        oper = operatorStack.pop();
+                        res = calculate(num1, num2, oper);
+                        // 计算结果入栈
+                        dataStack.push(res);
+                        // 当前操作符入栈
+                        operatorStack.push(ch);
+                    } else {
+                        operatorStack.push(ch);
+                    }
+                } else {
+                    operatorStack.push(ch);
+                }
+            } else {
+                keepNum += ch;
+                // 查看下一位，如果下一位是数字，入栈，如果是运算符，继续扫描
+                // 如果是最后一位
+                if(index == expression.length() -1) {
+                    dataStack.push(Integer.parseInt(keepNum)); // 字符串转为int
+                } else {
+                    if(isOperator(expression.charAt(index + 1))) {
+                        dataStack.push(Integer.parseInt(keepNum)); // "120"转成120
+                        keepNum = ""; // 记得清空
+                    }
+                }
+            }
+            index++;
+            // 扫描结束
+            if (index >= expression.length()) {
+                break;
+            }
+        }
+        while(true) {
+            if(operatorStack.isEmpty()) {
+                break;
+            }
+            num1 = dataStack.pop();
+            num2 = dataStack.pop();
+            oper = operatorStack.pop();
+            res = calculate(num1, num2, oper);
+            dataStack.push(res);
+        }
+        return dataStack.peek();
+    }
+    // 运算符的优先级
+    public static int priority(char val) {
+        if (val == '*' || val == '/') {
+            return 1;
+        } else if (val == '+' || val == '-') {
+            return 0;
+        } else {
+            return -1;
+        }
+    }
+    // 是否是运算符
+    public static boolean isOperator(char val) {
+        return val == '*' || val == '/' || val == '+' || val == '-';
+    }
+    // 两个数运算
+    public static int calculate(int num1, int num2, char operator) {
+        int res = 0;
+        switch (operator) {
+            case '+':
+                res = num1 + num2;
+                break;
+            case '-':
+                res = num2 - num1; // 注意顺序
+                break;
+            case '*':
+                res = num1 * num2;
+                break;
+            case '/':
+                res = num2 / num1;
+                break;
+        }
+        return res;
+    }
+}
+```
+
+思考：表达式中有小括号要怎么做
+
 ### 队列
 
 队列： 队列是一个有序列表，可以用数组或者链表来实现，遵循先入先出的原则

@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        .box {
+            width: 100px;
+            height: 100px;
+            margin: auto;
+            margin-bottom: 10px;
+        }
+        .border-bg {
+            background-image:linear-gradient(180deg, red, red 50%, transparent 50%),
+            linear-gradient(270deg, red, red 50%, transparent 50%),
+            linear-gradient(0deg, red, red 50%, transparent 50%),
+            linear-gradient(90deg, red, red 50%, transparent 50%);
+            background-size: 100% 1px,1px 100% ,100% 1px, 1px 100%;
+            background-repeat: no-repeat;
+            background-position: top, right top,  bottom, left top;
+        }
+        .border-1px {
+            position: relative;
+        }
+        .border-1px:after {
+            position: absolute;
+            content: '';
+            top: -50%;
+            bottom: -50%;
+            left: -50%;
+            right: -50%;
+            -webkit-transform: scale(0.5);
+            transform: scale(0.5);
+            border: 1px solid red;
+        }
+    </style>
+</head>
+<body>
+<div class="one box border-bg"></div>
+<div class="two box border-1px"></div>
+<div class="three box border-image-1px"></div>
+<div class="four box"></div>
+<div class="five box"></div>
+</body>
+</html>
